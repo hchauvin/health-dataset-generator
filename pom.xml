@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>fr.aphp.wind.eds.generator</groupId>
+    <artifactId>generator-parent</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>generator-source-synthea</module>
+        <module>generator-target-eds</module>
+        <module>generator-core</module>
+    </modules>
+
+    <properties>
+        <version.scala.binary>2.12</version.scala.binary>
+        <format.check>false</format.check>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.antipathy</groupId>
+                <artifactId>mvn-scalafmt_${version.scala.binary}</artifactId>
+                <version>1.0.3</version>
+                <configuration>
+                    <configLocation>.scalafmt.conf</configLocation>
+                    <respectVersion>true</respectVersion> <!-- fail if no version set in scalafmt.conf -->
+                    <validateOnly>${format.check}</validateOnly> <!-- check formatting without changing files -->
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

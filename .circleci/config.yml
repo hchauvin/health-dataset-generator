@@ -1,0 +1,32 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: hchauvin/spark-r-ci
+    steps:
+      - checkout
+      #- setup_remote_docker:
+      #    docker_layer_caching: true
+      - restore_cache:
+          key: sbt-cache
+      - run:
+          name: Install third party dependencies
+          command: ./make.py dev_third_party
+      - run:
+          name: Check source code formatting
+          command: ./make.py dev_format_check
+      - run:
+          name: Execute tests
+          command: ./make.py test
+      - run:
+          name: Build Docker image
+          command: ./make.py docker_build
+#      - run:
+#          name: Push Docker image
+#          command: ./make.py docker_push
+      - save_cache:
+          key: sbt-cache
+          paths:
+            - "~/.ivy2/cache"
+            - "~/.sbt"
+            - "~/.m2"

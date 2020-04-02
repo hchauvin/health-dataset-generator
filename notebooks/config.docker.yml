@@ -1,0 +1,15 @@
+# Configuration when Polynote is run in the Docker container.
+
+listen:
+  host: 0.0.0.0
+
+storage:
+  dir: /opt/generator/notebooks
+  mounts:
+    examples:
+      dir: examples
+
+dependencies:
+  scala:
+    - file:///opt/generator/generator-target-eds/target/generator-target-eds-jar-with-dependencies.jar
+    - file:///opt/generator/third-party/synthea-with-dependencies.jar
