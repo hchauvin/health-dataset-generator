@@ -8,11 +8,11 @@ object FromSynthea {
     EDSBundle(
       persons = convert.syntheaPatients.toPersons(bundle.patients),
       observations = convert.syntheaPatients.toObservations(bundle.patients),
-      visitOccurrences = convert.syntheaEncounters.toVisitOccurrence(bundle.encounters),
-      careSite = convert.syntheaOrganizations.toCareSite(bundle.organizations),
-      conditionOccurrences = convert.syntheaConditions.toConditionOccurrence(bundle.conditions),
-      procedureOccurrences = convert.syntheaProcedures.toProcedureOccurrence(bundle.procedures),
-      providers = convert.syntheaProviders.toProvider(bundle.providers)
+      visitOccurrences = convert.syntheaEncounters.toVisitOccurrences(bundle.encounters),
+      careSite = convert.syntheaOrganizations.toCareSites(bundle.organizations),
+      conditionOccurrences = convert.syntheaConditions.toConditionOccurrences(bundle.conditions),
+      procedureOccurrences = convert.syntheaProcedures.toProcedureOccurrences(bundle.procedures),
+      providers = convert.syntheaProviders.toProviders(bundle.providers)
     )
   }
 
@@ -48,7 +48,7 @@ object FromSynthea {
     }
 
     object syntheaEncounters {
-      def toVisitOccurrence(df: DataFrame): DataFrame = {
+      def toVisitOccurrences(df: DataFrame): DataFrame = {
         df.select("id", "patient", "provider", "organization", "start", "stop")
           .withColumnRenamed("id", "visit_occurrence_id")
           .withColumnRenamed("patient", "person_id")
@@ -66,7 +66,7 @@ object FromSynthea {
     }
 
     object syntheaOrganizations {
-      def toCareSite(df: DataFrame): DataFrame = {
+      def toCareSites(df: DataFrame): DataFrame = {
         df.select("id", "name")
           .withColumnRenamed("id", "care_site_id")
           .withColumnRenamed("name", "care_site_name")
@@ -74,7 +74,7 @@ object FromSynthea {
     }
 
     object syntheaConditions {
-      def toConditionOccurrence(df: DataFrame): DataFrame = {
+      def toConditionOccurrences(df: DataFrame): DataFrame = {
         df.select("id", "start", "stop", "encounter", "patient", "code")
           .withColumnRenamed("id", "condition_occurrence_id")
           .withColumnRenamed("start", "condition_start_datetime")
@@ -87,7 +87,7 @@ object FromSynthea {
     }
 
     object syntheaProcedures {
-      def toProcedureOccurrence(df: DataFrame): DataFrame = {
+      def toProcedureOccurrences(df: DataFrame): DataFrame = {
         df.select("id", "code", "date", "patient", "encounter")
           .withColumnRenamed("id", "procedure_occurrence_id")
           .withColumnRenamed("code", "procedure_source_value")
@@ -99,7 +99,7 @@ object FromSynthea {
     }
 
     object syntheaProviders {
-      def toProvider(df: DataFrame): DataFrame = {
+      def toProviders(df: DataFrame): DataFrame = {
         df.select("id", "name", "organization", "gender")
           .withColumnRenamed("id", "provider_id")
           .withColumnRenamed("name", "provider_name")
