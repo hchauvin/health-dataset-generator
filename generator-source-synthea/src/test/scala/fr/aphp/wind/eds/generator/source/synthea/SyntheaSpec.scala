@@ -5,9 +5,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import org.apache.spark.sql.Row
 
-class SyntheaSpec extends AnyFlatSpec
-  with Matchers
-  with DataFrameSuiteBase {
+class SyntheaSpec extends AnyFlatSpec with Matchers with DataFrameSuiteBase {
 
   behavior of "SyntheaDataBundle"
 
@@ -33,13 +31,20 @@ class SyntheaSpec extends AnyFlatSpec
 
   it should "generate one patient" in {
     val bundle = generate(1)
-    bundle.patients.count() should equal (1)
+    bundle.patients.count() should equal(1)
 
     // We also collect all the other data frames to make sure they can be read
-    bundle.genericBundle.dataFrames.foreach { case (tableName, df) => try {
-      df.collect()
-    } catch {
-      case e: Exception => throw new RuntimeException(s"cannot collect data frame for table ${tableName}", e)
-    }}
+    bundle.genericBundle.dataFrames.foreach {
+      case (tableName, df) =>
+        try {
+          df.collect()
+        } catch {
+          case e: Exception =>
+            throw new RuntimeException(
+              s"cannot collect data frame for table ${tableName}",
+              e
+            )
+        }
+    }
   }
 }

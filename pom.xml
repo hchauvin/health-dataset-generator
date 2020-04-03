@@ -14,5 +14,37 @@
         <module>generator-core</module>
     </modules>
 
+    <properties>
+        <version.scala.binary>2.12</version.scala.binary>
+        <format.check>false</format.check>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.antipathy</groupId>
+                <artifactId>mvn-scalafmt_${version.scala.binary}</artifactId>
+                <version>1.0.3</version>
+                <configuration>
+                    <configLocation>.scalafmt.conf</configLocation>
+                    <respectVersion>true</respectVersion> <!-- fail if no version set in scalafmt.conf -->
+                    <validateOnly>${format.check}</validateOnly> <!-- check formatting without changing files -->
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

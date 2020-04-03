@@ -7,9 +7,10 @@ import fr.aphp.wind.eds.data.GenericDataBundle
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-class FrictionlessSpec extends AnyFlatSpec
-  with Matchers
-  with DataFrameSuiteBase {
+class FrictionlessSpec
+    extends AnyFlatSpec
+    with Matchers
+    with DataFrameSuiteBase {
 
   behavior of "fromDataBundle"
 
@@ -17,14 +18,21 @@ class FrictionlessSpec extends AnyFlatSpec
     import spark.implicits._
 
     val descriptor = DataPackage.Descriptor(
-      resources = Seq(DataResource.Descriptor(
-        path = Seq("df1.csv"),
-        name = "df1",
-        schema = Some("df1.schema.json")),
+      resources = Seq(
+        DataResource.Descriptor(
+          path = Seq("df1.csv"),
+          name = "df1",
+          format = Some("csv"),
+          schema = Some("df1.schema.json")
+        ),
         DataResource.Descriptor(
           path = Seq("df2.csv"),
           name = "df2",
-          schema = Some("df2.schema.json"))))
+          format = Some("csv"),
+          schema = Some("df2.schema.json")
+        )
+      )
+    )
 
     val df1 = Seq((1, "foo"), (2, "bar")).toDF("id2", "value1")
     val df2 = Seq((2, "qux"), (3, "wobble")).toDF("id2", "value2")
@@ -34,6 +42,11 @@ class FrictionlessSpec extends AnyFlatSpec
     val outputPath = Paths.get("output").toAbsolutePath
     new scala.reflect.io.Directory(outputPath.toFile).deleteRecursively()
 
-    fromDataBundle(descriptor, bundle, outputPath.toFile, moveSinglePartitions=false)
+    writeDataBundle(
+      descriptor,
+      bundle,
+      outputPath.toFile,
+      moveSinglePartitions = false
+    )
   }
 }

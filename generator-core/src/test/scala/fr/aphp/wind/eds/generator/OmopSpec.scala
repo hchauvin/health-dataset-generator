@@ -5,9 +5,7 @@ import fr.aphp.wind.eds.generator.Omop.Field
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-class OmopSpec extends AnyFlatSpec
-  with Matchers
-  with DataFrameSuiteBase {
+class OmopSpec extends AnyFlatSpec with Matchers with DataFrameSuiteBase {
 
   behavior of "Field.conceptStem"
 
