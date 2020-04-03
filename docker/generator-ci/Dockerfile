@@ -1,4 +1,4 @@
-FROM openjdk:8-buster
+FROM circleci/openjdk:8-buster
 
 ## Install sbt
 ENV SBT_VERSION 1.3.8
