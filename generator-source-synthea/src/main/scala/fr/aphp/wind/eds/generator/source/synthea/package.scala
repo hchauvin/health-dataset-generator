@@ -2,7 +2,7 @@ package fr.aphp.wind.eds.generator.source
 
 import java.nio.file.Paths
 
-import fr.aphp.wind.eds.generator.GenericDataBundle
+import fr.aphp.wind.eds.data.GenericDataBundle
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.mitre.synthea.engine.Generator
 import org.mitre.synthea.engine.Generator.GeneratorOptions
@@ -11,7 +11,7 @@ import org.mitre.synthea.helpers.Config
 
 package object synthea {
   case class SyntheaDataBundle(patients: DataFrame, encounters: DataFrame, organizations: DataFrame,
-                               conditions: DataFrame, procedures: DataFrame, providers: DataFrame) extends DataBundle {
+                               conditions: DataFrame, procedures: DataFrame, providers: DataFrame) {
     def this(bundle: GenericDataBundle) {
       this(
         patients = bundle("patients"),
@@ -20,6 +20,17 @@ package object synthea {
         conditions = bundle("conditions"),
         procedures = bundle("procedures"),
         providers = bundle("providers"))
+    }
+
+    def genericBundle: GenericDataBundle = {
+      GenericDataBundle(Map(
+        "patients" -> patients,
+        "encounters" -> encounters,
+        "organizations" -> organizations,
+        "conditions" -> conditions,
+        "procedures" -> procedures,
+        "providers" -> providers
+      ))
     }
   }
 
@@ -33,14 +44,14 @@ package object synthea {
         "conditions",
         "procedures",
         "providers"
-      ).map(table => (table, spark.read.format("csv").option("header", "true").csv(path + "/" + table)))
+      ).map(table => (table, spark.read.format("csv").option("header", "true").csv(path + "/csv/" + table + ".csv")))
         .toMap))
     }
   }
 
   def generate(population: Int): SyntheaDataBundle = {
-    val baseDirectory = Paths.get("output")
-    Config.set("exporter.baseDirectory", baseDirectory.toAbsolutePath.toString) // TODO
+    val baseDirectory = Paths.get("output").toAbsolutePath
+    Config.set("exporter.baseDirectory", baseDirectory.toString) // TODO
     Config.set("exporter.csv.export", "true")
     new Generator(
       new GeneratorOptions {
