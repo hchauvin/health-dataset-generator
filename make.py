@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 from subprocess import run
 
-if not os.environ["CIRCLECI"]:
+if not os.environ.get("CIRCLECI"):
     os.environ["DOCKER_BUILDKIT"] = "1"
 
 DOCKER_IMAGE = "hchauvin/eds-generator-notebooks"

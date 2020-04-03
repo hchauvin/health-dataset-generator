@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     machine:
-      image: circleci/classic:201808-01
+      image: ubuntu-1604:201903-01
 #      docker_layer_caching: true
     steps:
       - checkout
@@ -25,9 +25,10 @@ jobs:
       - run:
           name: Execute tests
           command: ./make.py dev_test
-      - run:
-          name: Build Docker image
-          command: ./make.py docker_build
+      # NOTE: --mount not supported by CircleCI Docker version.
+#      - run:
+#          name: Build Docker image
+#          command: ./make.py docker_build
 #      - run:
 #          name: Push Docker image
 #          command: ./make.py docker_push

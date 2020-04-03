@@ -29,9 +29,9 @@ class SyntheaSpec extends AnyFlatSpec with Matchers with DataFrameSuiteBase {
 
   behavior of "generate"
 
-  it should "generate one patient" in {
+  it should "generate one alive patient" in {
     val bundle = generate(1)
-    bundle.patients.count() should equal(1)
+    bundle.patients.where("deathdate is null").count() should equal(1)
 
     // We also collect all the other data frames to make sure they can be read
     bundle.genericBundle.dataFrames.foreach {
