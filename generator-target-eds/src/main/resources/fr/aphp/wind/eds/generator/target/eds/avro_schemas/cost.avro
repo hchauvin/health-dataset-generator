@@ -1,0 +1,126 @@
+{
+  "type" : "record",
+  "name" : "cost",
+  "namespace" : "fr.aphp.wind.eds.omop",
+  "fields" : [ {
+    "name" : "cost_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "incurred_datetime",
+    "type" : [ "null", {
+      "type" : "int",
+      "logicalType" : "date"
+    } ]
+  }, {
+    "name" : "person_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "drg_source_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "row_status_source_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "key",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "hash",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "insert_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "update_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "delete_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "change_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "cost_event_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "cost_event_field_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "cost_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "cost_source_value",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "cost_source_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "cost_type_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "cost_type_source_value",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "cost_type_source_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "currency_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "cost",
+    "type" : [ "null", "double" ]
+  }, {
+    "name" : "incurred_date",
+    "type" : [ "null", {
+      "type" : "int",
+      "logicalType" : "date"
+    } ]
+  }, {
+    "name" : "billed_date",
+    "type" : [ "null", {
+      "type" : "int",
+      "logicalType" : "date"
+    } ]
+  }, {
+    "name" : "paid_date",
+    "type" : [ "null", {
+      "type" : "int",
+      "logicalType" : "date"
+    } ]
+  }, {
+    "name" : "revenue_code_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "drg_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "drg_source_value",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "revenue_code_source_value",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "payer_plan_period_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "row_status_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "row_status_source_value",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "row_id",
+    "type" : [ "null", "long" ]
+  } ]
+}

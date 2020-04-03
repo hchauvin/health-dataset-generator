@@ -1,5 +1,6 @@
-container_image_id
-target
+generator-core/target
+generator-source-synthea/target
+generator-target-eds/target
 output
 *.iml
 .idea

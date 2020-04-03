@@ -1,0 +1,66 @@
+{
+  "type" : "record",
+  "name" : "location_history",
+  "namespace" : "fr.aphp.wind.eds.omop",
+  "fields" : [ {
+    "name" : "location_history_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "delete_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "domain_id",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "end_date",
+    "type" : [ "null", {
+      "type" : "int",
+      "logicalType" : "date"
+    } ]
+  }, {
+    "name" : "insert_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "location_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "start_date",
+    "type" : [ "null", {
+      "type" : "int",
+      "logicalType" : "date"
+    } ]
+  }, {
+    "name" : "update_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "key",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "hash",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "change_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "relationship_type_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "entity_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "row_id",
+    "type" : [ "null", "long" ]
+  } ]
+}

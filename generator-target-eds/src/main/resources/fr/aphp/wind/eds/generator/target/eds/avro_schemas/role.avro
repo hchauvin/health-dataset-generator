@@ -1,0 +1,72 @@
+{
+  "type" : "record",
+  "name" : "role",
+  "namespace" : "fr.aphp.wind.eds.omop",
+  "fields" : [ {
+    "name" : "role_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "delete_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "hash",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "insert_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "key",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "name",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "update_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "change_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "right_read_data_nominative",
+    "type" : [ "null", "boolean" ]
+  }, {
+    "name" : "right_read_data_pseudo_anonymised",
+    "type" : [ "null", "boolean" ]
+  }, {
+    "name" : "right_write_data",
+    "type" : [ "null", "boolean" ]
+  }, {
+    "name" : "right_read_users",
+    "type" : [ "null", "boolean" ]
+  }, {
+    "name" : "right_write_users",
+    "type" : [ "null", "boolean" ]
+  }, {
+    "name" : "valid_start_date",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "valid_end_date",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "invalid_reason",
+    "type" : [ "null", "string" ]
+  } ]
+}

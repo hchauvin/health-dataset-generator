@@ -1,0 +1,135 @@
+{
+  "type" : "record",
+  "name" : "provider",
+  "namespace" : "fr.aphp.wind.eds.omop",
+  "fields" : [ {
+    "name" : "provider_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "auth_type",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "care_site_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "creation_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "birth_date",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "dea",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "delete_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "email",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "firstname",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "hash",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "insert_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "invalid_reason",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "is_active",
+    "type" : [ "null", "boolean" ]
+  }, {
+    "name" : "key",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "last_login_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "lastname",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "modified_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "npi",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "password",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "provider_name",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "provider_source_value",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "update_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "valid_end_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "valid_start_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "year_of_birth",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "gender_source_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "change_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "gender_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "gender_source_value",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "specialty_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "specialty_source_value",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "specialty_source_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "row_id",
+    "type" : [ "null", "long" ]
+  } ]
+}

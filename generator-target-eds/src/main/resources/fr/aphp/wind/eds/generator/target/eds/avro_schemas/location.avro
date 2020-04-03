@@ -1,0 +1,75 @@
+{
+  "type" : "record",
+  "name" : "location",
+  "namespace" : "fr.aphp.wind.eds.omop",
+  "fields" : [ {
+    "name" : "location_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "address",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "address_1",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "address_2",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "city",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "country",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "delete_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "insert_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "latitude",
+    "type" : [ "null", "double" ]
+  }, {
+    "name" : "longitude",
+    "type" : [ "null", "double" ]
+  }, {
+    "name" : "state",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "update_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "key",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "hash",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "change_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "zip",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "county",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "location_source_value",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "row_id",
+    "type" : [ "null", "long" ]
+  } ]
+}

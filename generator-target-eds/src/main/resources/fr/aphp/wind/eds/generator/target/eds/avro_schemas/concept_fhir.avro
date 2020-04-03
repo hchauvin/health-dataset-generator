@@ -1,0 +1,60 @@
+{
+  "type" : "record",
+  "name" : "concept_fhir",
+  "namespace" : "fr.aphp.wind.eds.omop",
+  "fields" : [ {
+    "name" : "concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "concept_code",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "concept_name",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "fhir_concept_code",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "fhir_concept_name",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "fhir_vocabulary_reference",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "key",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "hash",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "insert_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "update_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "delete_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "change_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "vocabulary_reference",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "row_id",
+    "type" : [ "null", "long" ]
+  } ]
+}

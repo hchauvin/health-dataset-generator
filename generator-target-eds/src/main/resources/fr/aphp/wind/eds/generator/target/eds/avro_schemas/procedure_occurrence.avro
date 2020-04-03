@@ -1,0 +1,102 @@
+{
+  "type" : "record",
+  "name" : "procedure_occurrence",
+  "namespace" : "fr.aphp.wind.eds.omop",
+  "fields" : [ {
+    "name" : "procedure_occurrence_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "delete_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "hash",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "insert_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "key",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "person_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "procedure_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "provider_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "update_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "visit_detail_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "visit_occurrence_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "procedure_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "procedure_source_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "change_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "procedure_date",
+    "type" : [ "null", {
+      "type" : "int",
+      "logicalType" : "date"
+    } ]
+  }, {
+    "name" : "procedure_source_value",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "procedure_type_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "procedure_type_source_value",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "procedure_type_source_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "modifier_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "modifier_source_value",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "quantity",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "row_status_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "row_status_source_value",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "row_status_source_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "row_id",
+    "type" : [ "null", "long" ]
+  } ]
+}

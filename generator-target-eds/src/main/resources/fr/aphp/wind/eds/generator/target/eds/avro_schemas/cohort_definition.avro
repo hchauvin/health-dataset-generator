@@ -1,0 +1,93 @@
+{
+  "type" : "record",
+  "name" : "cohort_definition",
+  "namespace" : "fr.aphp.wind.eds.omop",
+  "fields" : [ {
+    "name" : "cohort_definition_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "owner_entity_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "cohort_definition_description",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "cohort_definition_name",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "cohort_definition_syntax",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "cohort_initiation_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "cohort_size",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "owner_domain_id",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "invalid_reason",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "subject_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "valid_end_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "valid_start_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "key",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "hash",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "insert_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "update_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "delete_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "change_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "cohort_definition_source_value",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "definition_type_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "subject_source_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "row_id",
+    "type" : [ "null", "long" ]
+  } ]
+}

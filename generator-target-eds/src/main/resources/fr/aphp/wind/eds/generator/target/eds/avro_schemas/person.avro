@@ -1,0 +1,111 @@
+{
+  "type" : "record",
+  "name" : "person",
+  "namespace" : "fr.aphp.wind.eds.omop",
+  "fields" : [ {
+    "name" : "person_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "delete_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "gender_source_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "hash",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "insert_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "key",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "birth_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "death_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "update_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "change_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "person_source_value",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "location_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "provider_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "care_site_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "year_of_birth",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "month_of_birth",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "day_of_birth",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "race_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "race_source_value",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "race_source_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "ethnicity_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "ethnicity_source_value",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "ethnicity_source_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "gender_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "gender_source_value",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "row_status_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "row_status_source_value",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "row_status_source_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "row_id",
+    "type" : [ "null", "long" ]
+  } ]
+}

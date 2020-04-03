@@ -1,0 +1,57 @@
+{
+  "type" : "record",
+  "name" : "fact_relationship",
+  "namespace" : "fr.aphp.wind.eds.omop",
+  "fields" : [ {
+    "name" : "hash",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "delete_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "insert_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "key",
+    "type" : [ "null", "string" ]
+  }, {
+    "name" : "update_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "fact_id_1",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "fact_id_2",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "domain_concept_id_1",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "domain_concept_id_2",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "change_datetime",
+    "type" : [ "null", {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    } ]
+  }, {
+    "name" : "fact_relationship_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "relationship_concept_id",
+    "type" : [ "null", "long" ]
+  }, {
+    "name" : "row_id",
+    "type" : [ "null", "long" ]
+  } ]
+}
