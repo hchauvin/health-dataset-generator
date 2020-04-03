@@ -9,9 +9,6 @@ jobs:
       - restore_cache:
           key: sbt-cache
       - run:
-          name: Apt
-          command: sudo apt-get update && sudo apt-get install -y python3
-      - run:
           name: Install third party dependencies
           command: ./make.py dev_third_party
       - run:
