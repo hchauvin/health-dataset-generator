@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: hchauvin/spark-r-ci
+      - image: hchauvin/generator-ci
     steps:
       - checkout
       #- setup_remote_docker:
