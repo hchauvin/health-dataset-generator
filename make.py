@@ -60,7 +60,8 @@ def dev_third_party():
 
 
 def dev_test():
-    run(["mvn", "test"], check=True)
+    run(["mvn", "test", "-Dformat.skipTestSources=true",
+         "-Dformat.skipSources=true"], check=True)
 
 
 def dev_format():
@@ -83,7 +84,8 @@ class Make:
             usage="make <command> [<args>]")
         subcommands = [attr for attr in dir(self) if not attr.startswith("__")]
         parser.add_argument('command',
-                            help='Subcommand to run: one of ' + " ".join(subcommands))
+                            help='Subcommand to run: one of ' + " ".join(
+                                subcommands))
         args = parser.parse_args(sys.argv[1:2])
         if not hasattr(self, args.command):
             print('Unrecognized command')
@@ -94,7 +96,8 @@ class Make:
     def docker_run(self):
         parser = argparse.ArgumentParser(
             description='Run the docker image')
-        parser.add_argument('-b', '--build', dest='build', action='store_true', help='build the image beforehand')
+        parser.add_argument('-b', '--build', dest='build', action='store_true',
+                            help='build the image beforehand')
         parser.add_argument('-v', '--volume', nargs='*',
                             help='A volume to mount')
         args = parser.parse_args(sys.argv[2:])

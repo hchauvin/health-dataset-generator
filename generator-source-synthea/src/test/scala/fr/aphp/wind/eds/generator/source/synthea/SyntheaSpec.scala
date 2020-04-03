@@ -3,7 +3,7 @@ package fr.aphp.wind.eds.generator.source.synthea
 import com.holdenkarau.spark.testing.DataFrameSuiteBase
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import org.apache.spark.sql.Row
+import org.apache.spark.sql.{Row, SparkSession}
 
 class SyntheaSpec extends AnyFlatSpec with Matchers with DataFrameSuiteBase {
 
@@ -31,7 +31,11 @@ class SyntheaSpec extends AnyFlatSpec with Matchers with DataFrameSuiteBase {
 
   it should "generate one alive patient" in {
     val bundle = generate(1)
-    bundle.patients.where("deathdate is null").count() should equal(1)
+
+    val sqlContext = SparkSession.active.sqlContext
+    import sqlContext.implicits._
+
+    bundle.patients.where('deathdate.isNull).count() should equal(1)
 
     // We also collect all the other data frames to make sure they can be read
     bundle.genericBundle.dataFrames.foreach {
