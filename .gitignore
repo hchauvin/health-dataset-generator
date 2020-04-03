@@ -4,4 +4,4 @@ output
 generator-core/target
 generator-source-synthea/target
 generator-target-eds/target
-third-party
+/third-party
