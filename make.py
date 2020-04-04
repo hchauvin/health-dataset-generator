@@ -1,83 +1,155 @@
 #!/usr/bin/env python3
 
-# This script requires python 3.7 or higher.
+# NOTE: This script requires python 3.7 or higher.
 
 import argparse
 import os
+import re
 import shutil
 import sys
 from pathlib import Path
 from subprocess import run
 
-if not os.environ.get("CIRCLECI"):
-    os.environ["DOCKER_BUILDKIT"] = "1"
 
-DOCKER_IMAGE = "hchauvin/eds-generator-notebooks"
-CONTAINER_NAME = "eds-generator-notebooks"
+class Docker:
+    """
+    All Docker-related commands.
+
+    Args:
+        with_buildkit: Whether to run with buildkit support (not available on
+            some runtimes).
+    """
+
+    DOCKER_IMAGE = "hchauvin/eds-generator-notebooks"
+    CONTAINER_NAME = "eds-generator-notebooks"
+
+    def __init__(self, with_buildkit):
+        env = {**os.environ, "DOCKER_BUILDKIT": "1" if with_buildkit else "0"}
+
+        if with_buildkit:
+            dockerfile = "./Dockerfile"
+        else:
+            # We need to disable buildkit-specific features in the Dockerfile
+            with open("Dockerfile", "r") as f:
+                dockerfile = f.read()
+            dockerfile = re.compile(r"\s*--mount=[^\s]+ \\\n",
+                                    re.MULTILINE).sub("", dockerfile)
+            with open("Dockerfile.nobuildkit", "w") as f:
+                f.write(dockerfile)
+            dockerfile = "./Dockerfile.nobuildkit"
+
+        self.env = env
+        self.dockerfile = dockerfile
+
+    def docker_run(self, build, volumes):
+        if build:
+            self.docker_build()
+
+        run(["docker", "rm", "-f", Docker.CONTAINER_NAME], check=False,
+            capture_output=True, env=self.env)
+
+        cwd = os.getcwd()
+
+        args = ["docker", "run",
+                "--name", Docker.CONTAINER_NAME,
+                "-v", f"{cwd}/notebooks:/opt/generator/notebooks",
+                ]
+        for v in volumes:
+            args += ["-v", v]
+        args += [
+            "-p", "127.0.0.1:8192:8192", "-p", "127.0.0.1:4040-4050:4040-4050",
+            Docker.DOCKER_IMAGE
+        ]
+
+        run(args, check=True)
+
+    def docker_build(self, tag=DOCKER_IMAGE, target=None):
+        args = ["docker", "build", "-f", self.dockerfile, "-t", tag,
+                "--cache-from", Docker.DOCKER_IMAGE,
+                "--cache-from", self.intermediate_docker_image("third-party")]
+        if target:
+            args += ["--target", target]
+        args += ["."]
+        run(args, check=True, env=self.env)
+
+    def docker_push(self):
+        self.docker_build(tag=self.intermediate_docker_image("third-party"),
+                          target="third_party")
+        run(["docker", "push", self.intermediate_docker_image("third-party")],
+            check=True, env=self.env)
+
+        self.docker_build()
+        run(["docker", "push", Docker.DOCKER_IMAGE], check=True, env=self.env)
+
+    def intermediate_docker_image(self, name):
+        return f"{Docker.DOCKER_IMAGE}-{name}"
+
+    def intermediate_container_name(self, name):
+        return f"{Docker.CONTAINER_NAME}-{name}"
 
 
-def docker_run(build, volumes):
-    if build:
-        docker_build()
-    cwd = os.getcwd()
-    run(["docker", "rm", "-f", CONTAINER_NAME], check=False,
-        capture_output=True)
+class Dev:
+    """
+    All the commands related to local development.
 
-    args = ["docker", "run",
-            "--name", CONTAINER_NAME,
-            "-v", f"{cwd}/notebooks:/opt/generator/notebooks",
-            ]
-    for v in volumes:
-        args += ["-v", v]
-    args += [
-        "-p", "127.0.0.1:8192:8192", "-p", "127.0.0.1:4040-4050:4040-4050",
-        DOCKER_IMAGE]
-    run(args, check=True)
+    Args:
+        docker: A Docker object.
+    """
 
+    def __init__(self, docker):
+        self.docker = docker
 
-def docker_build():
-    ensure_third_party()
-    run(["docker", "build", "-t", DOCKER_IMAGE, "."], check=True)
+    def dev_third_party(self):
+        third_party_docker_image = self.docker.intermediate_docker_image(
+            "third-party")
+        third_party_container_name = self.docker.intermediate_container_name(
+            "third-party")
 
+        cwd = os.getcwd()
+        self.docker.docker_build(tag=third_party_docker_image,
+                                 target="third_party")
+        run(["docker", "rm", "-f", third_party_container_name], check=False,
+            capture_output=True)
+        run(["docker", "create", "--name", third_party_container_name,
+             third_party_docker_image], check=True)
+        if Path("third-party").exists():
+            shutil.rmtree("third-party")
+        run(["docker", "cp",
+             f"{third_party_container_name}:/opt/generator/third-party",
+             f"{cwd}/third-party"], check=True)
+        run(["docker", "rm", third_party_container_name], check=True)
 
-def docker_push():
-    run(["docker", "push", DOCKER_IMAGE], check=True)
+    def dev_package(self):
+        self._ensure_third_party()
+        run(["mvn", "package", "-T 1.5C", "-Dmaven.test.skip=true",
+             "-DskipTests"], check=True)
 
+    def dev_test(self):
+        self._ensure_third_party()
+        run(["mvn", "test"], check=True)
 
-def dev_third_party():
-    cwd = os.getcwd()
-    run(["docker", "build", "-t", "eds-generator-third-party",
-         "docker/third-party"], check=True)
-    run(["docker", "rm", "-f", "eds-generator-third-party"], check=False,
-        capture_output=True)
-    run(["docker", "create", "--name", "eds-generator-third-party",
-         "eds-generator-third-party"], check=True)
-    if Path("third-party").exists():
-        shutil.rmtree("third-party")
-    run(["docker", "cp", "eds-generator-third-party:/opt/generator/third-party",
-         f"{cwd}/third-party"], check=True)
-    run(["docker", "rm", "eds-generator-third-party"], check=True)
+    def dev_format(self):
+        self._ensure_third_party()
+        run(["mvn", "validate", "-T 1.5C", "-Dformat.check=false",
+             "-Dformat.skipTestSources=false",
+             "-Dformat.skipSources=false"], check=True)
 
+    def dev_format_check(self):
+        self._ensure_third_party()
+        run(["mvn", "validate", "-T 1.5C", "-Dformat.check=true",
+             "-Dformat.skipTestSources=false",
+             "-Dformat.skipSources=false"], check=True)
 
-def dev_test():
-    run(["mvn", "test", "-Dformat.skipTestSources=true",
-         "-Dformat.skipSources=true"], check=True)
-
-
-def dev_format():
-    run(["mvn", "validate"], check=True)
-
-
-def dev_format_check():
-    run(["mvn", "validate", "-Dformat.check=true"], check=True)
-
-
-def ensure_third_party():
-    if not Path("third-party").exists():
-        dev_third_party()
+    def _ensure_third_party(self):
+        if not Path("third-party").exists():
+            self.dev_third_party()
 
 
 class Make:
+    """
+    Command-Line Interface.
+    """
+
     def __init__(self):
         parser = argparse.ArgumentParser(
             description='Make',
@@ -101,43 +173,55 @@ class Make:
         parser.add_argument('-v', '--volume', nargs='*',
                             help='A volume to mount')
         args = parser.parse_args(sys.argv[2:])
-        docker_run(build=args.build, volumes=args.volume)
+        self._docker().docker_run(build=args.build, volumes=args.volume)
 
     def docker_build(self):
         parser = argparse.ArgumentParser(
             description='Build the docker image')
         args = parser.parse_args(sys.argv[2:])
-        docker_build()
+        self._docker().docker_build()
 
     def docker_push(self):
         parser = argparse.ArgumentParser(
             description='Push the docker image')
         args = parser.parse_args(sys.argv[2:])
-        docker_push()
+        self._docker().docker_push()
 
     def dev_third_party(self):
         parser = argparse.ArgumentParser(
             description="Download/compile third-party dependencies and put them in the 'third-party' directory")
         args = parser.parse_args(sys.argv[2:])
-        dev_third_party()
+        self._dev().dev_third_party()
 
     def dev_test(self):
         parser = argparse.ArgumentParser(
             description="Execute tests")
         args = parser.parse_args(sys.argv[2:])
-        dev_test()
+        self._dev().dev_test()
 
     def dev_format(self):
         parser = argparse.ArgumentParser(
             description='Format source files')
         args = parser.parse_args(sys.argv[2:])
-        dev_format()
+        self._dev().dev_format()
 
     def dev_format_check(self):
         parser = argparse.ArgumentParser(
             description='Check source file formatting')
         args = parser.parse_args(sys.argv[2:])
-        dev_format_check()
+        self._dev().dev_format_check()
+
+    def _docker(self):
+        # We enable buildkit by default
+        with_buildkit = True
+        if os.environ.get("CIRCLECI"):
+            # Buildkit is not currently supported in CIRCLECI
+            with_buildkit = False
+
+        return Docker(with_buildkit=with_buildkit)
+
+    def _dev(self):
+        return Dev(self._docker())
 
 
 if __name__ == "__main__":

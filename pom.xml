@@ -17,6 +17,8 @@
     <properties>
         <version.scala.binary>2.12</version.scala.binary>
         <format.check>false</format.check>
+        <format.skipTestSources>true</format.skipTestSources>
+        <format.skipSources>true</format.skipSources>
     </properties>
 
     <build>

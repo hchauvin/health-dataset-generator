@@ -25,10 +25,9 @@ jobs:
       - run:
           name: Execute tests
           command: ./make.py dev_test
-      # NOTE: --mount not supported by CircleCI Docker version.
-#      - run:
-#          name: Build Docker image
-#          command: ./make.py docker_build
+      - run:
+          name: Build Docker image
+          command: ./make.py docker_build
 #      - run:
 #          name: Push Docker image
 #          command: ./make.py docker_push

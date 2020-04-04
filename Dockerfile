@@ -1,5 +1,34 @@
 # syntax=docker/dockerfile:experimental@sha256:787107d7f7953cb2d95ee81cc7332d79aca9328129318e08fc7ffbd252a20656
-FROM polynote/polynote:0.3.6-2.12@sha256:5c3f5aaf4851a548d72ecd5554c71d788973cf13f74decbb096288daebaceb1f
+
+# ==================================================================================================
+# Build synthea
+
+FROM openjdk:8-buster as synthea
+
+ENV GIT_COMMIT=abc9fc4a2eedf2ab221f68a96efcc80955718c21
+
+RUN wget https://github.com/synthetichealth/synthea/archive/${GIT_COMMIT}.zip -q && \
+  unzip -q ${GIT_COMMIT}.zip && \
+  mv synthea-${GIT_COMMIT} /opt/synthea && \
+  rm ${GIT_COMMIT}.zip
+
+WORKDIR /opt/synthea
+
+RUN ./gradlew uberJar
+
+# ==================================================================================================
+# Gather third-party dependencies
+
+FROM ubuntu as third_party
+
+COPY --from=synthea \
+  /opt/synthea/build/libs/synthea-with-dependencies.jar \
+  /opt/generator/third-party/synthea-with-dependencies.jar
+
+# ==================================================================================================
+# Build the base image, used for compiling and testing the project itself
+
+FROM polynote/polynote:0.3.6-2.12@sha256:5c3f5aaf4851a548d72ecd5554c71d788973cf13f74decbb096288daebaceb1f as project_base
 
 USER root
 
@@ -15,15 +44,24 @@ ENV PATH=/opt/mvn/bin:${PATH}
 
 WORKDIR /opt/generator
 
-COPY --from=eds-generator-third-party /opt/generator/third-party /opt/generator/third-party
+COPY --from=third_party /opt/generator/third-party /opt/generator/third-party
 
 COPY . /opt/generator
 
-RUN --mount=type=cache,target=/root/.m2 \
+# TODO: Build a test image
+
+# ==================================================================================================
+# Build the notebook image
+
+FROM project_base
+
+RUN --mount=type=cache,id=m2,target=/root/.m2 \
   --mount=type=cache,target=/opt/generator/generator-core/target \
   --mount=type=cache,target=/opt/generator/generator-source-synthea/target \
   --mount=type=cache,target=/opt/generator/generator-target-eds/target \
-  mvn package -Dmaven.test.skip=true -DskipTests
+  mvn package -T 1.5C -Dmaven.test.skip=true -DskipTests && \
+  mv /opt/generator/generator-target-eds/target/generator-target-eds-jar-with-dependencies.jar \
+    /opt/generator/generator-target-eds-jar-with-dependencies.jar
 
 WORKDIR /opt
 

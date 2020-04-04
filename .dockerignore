@@ -6,3 +6,5 @@ output
 .idea
 .git
 third-party
+/Dockerfile.nobuildkit
+/Dockerfile
