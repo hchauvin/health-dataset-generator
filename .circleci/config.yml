@@ -25,9 +25,11 @@ jobs:
       - run:
           name: Build Docker image
           command: ./make.py docker_build
-#      - run:
-#          name: Push Docker image
-#          command: ./make.py docker_push
+      - run:
+          name: Push Docker images
+          command: |
+            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+            ./make.py docker_push
       - save_cache:
           key: sbt-cache
           paths:
