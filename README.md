@@ -1,6 +1,6 @@
 # Synthetic health dataset generator
 
-[![CircleCI](https://circleci.com/gh/hchauvin/generator/tree/master.svg?style=svg)](https://circleci.com/gh/hchauvin/generator/tree/master)
+[![CircleCI](https://circleci.com/gh/hchauvin/health-dataset-generator/tree/master.svg?style=svg)](https://circleci.com/gh/hchauvin/health-dataset-generator/tree/master)
 
 This project contains helpers to generate synthetic health datasets.
 
