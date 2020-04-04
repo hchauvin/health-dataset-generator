@@ -73,10 +73,12 @@ class Docker:
         run(args, check=True, env=self.env)
 
     def docker_push(self):
-        self.docker_build(tag=self.intermediate_docker_image("third-party"),
-                          target="third_party")
-        run(["docker", "push", self.intermediate_docker_image("third-party")],
-            check=True, env=self.env)
+        intermediate_docker_images = ["synthea", "third-party"]
+        for image in intermediate_docker_images:
+            self.docker_build(tag=self.intermediate_docker_image(image),
+                              target=image)
+            run(["docker", "push", self.intermediate_docker_image(image)],
+                check=True, env=self.env)
 
         self.docker_build()
         run(["docker", "push", Docker.DOCKER_IMAGE], check=True, env=self.env)
@@ -107,7 +109,7 @@ class Dev:
 
         cwd = os.getcwd()
         self.docker.docker_build(tag=third_party_docker_image,
-                                 target="third_party")
+                                 target="third-party")
         run(["docker", "rm", "-f", third_party_container_name], check=False,
             capture_output=True)
         run(["docker", "create", "--name", third_party_container_name,

@@ -19,7 +19,7 @@ RUN ./gradlew uberJar
 # ==================================================================================================
 # Gather third-party dependencies
 
-FROM ubuntu as third_party
+FROM ubuntu as third-party
 
 COPY --from=synthea \
   /opt/synthea/build/libs/synthea-with-dependencies.jar \
@@ -28,7 +28,7 @@ COPY --from=synthea \
 # ==================================================================================================
 # Build the base image, used for compiling and testing the project itself
 
-FROM polynote/polynote:0.3.6-2.12@sha256:5c3f5aaf4851a548d72ecd5554c71d788973cf13f74decbb096288daebaceb1f as project_base
+FROM polynote/polynote:0.3.6-2.12@sha256:5c3f5aaf4851a548d72ecd5554c71d788973cf13f74decbb096288daebaceb1f as project-base
 
 USER root
 
@@ -53,7 +53,7 @@ COPY . /opt/generator
 # ==================================================================================================
 # Build the notebook image
 
-FROM project_base
+FROM project-base
 
 RUN --mount=type=cache,id=m2,target=/root/.m2 \
   --mount=type=cache,target=/opt/generator/generator-core/target \
