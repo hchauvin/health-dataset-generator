@@ -44,7 +44,7 @@ ENV PATH=/opt/mvn/bin:${PATH}
 
 WORKDIR /opt/generator
 
-COPY --from=third_party /opt/generator/third-party /opt/generator/third-party
+COPY --from=third-party /opt/generator/third-party /opt/generator/third-party
 
 COPY . /opt/generator
 
