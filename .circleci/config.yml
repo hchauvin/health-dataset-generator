@@ -11,12 +11,6 @@ jobs:
       - restore_cache:
           key: sbt-cache
       - run:
-          name: pyenv
-          command: pyenv global 3.7.0
-      - run:
-          name: ls
-          command: pwd && ls
-      - run:
           name: Install third party dependencies
           command: ./make.py dev_third_party
       - run:
