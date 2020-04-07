@@ -4,6 +4,7 @@ import java.util.UUID
 
 import fr.aphp.wind.eds.generator.source.synthea.SyntheaDataBundle
 import org.apache.spark.sql.{Column, DataFrame, SparkSession}
+import org.apache.spark.sql.types.{DoubleType}
 
 /** Converts a data bundle produced by Synthea to the format expected by the EDS.  */
 object FromSynthea {
@@ -16,17 +17,25 @@ object FromSynthea {
     */
   def apply(bundle: SyntheaDataBundle): EDSDataBundle = {
     EDSDataBundle(
+      fhirConcepts =
+        convert.syntheaConcepts.toFhirConcepts(bundle.conditions, bundle.procedures),
       persons = convert.syntheaPatients.toPersons(bundle.patients),
       observations = convert.syntheaPatients.toObservations(bundle.patients),
       visitOccurrences =
         convert.syntheaEncounters.toVisitOccurrences(bundle.encounters),
+      notes = convert.syntheaEncounters.toNotes(bundle.encounters),
       careSites =
         convert.syntheaOrganizations.toCareSites(bundle.organizations),
       conditionOccurrences =
         convert.syntheaConditions.toConditionOccurrences(bundle.conditions),
       procedureOccurrences =
         convert.syntheaProcedures.toProcedureOccurrences(bundle.procedures),
-      providers = convert.syntheaProviders.toProviders(bundle.providers)
+      providers = convert.syntheaProviders.toProviders(bundle.providers),
+      costs = convert.syntheaProcedures.toCosts(bundle.procedures),
+      locations = convert.syntheaPatients.toLocations(bundle.patients),
+      cohortDefinitions =
+        convert.syntheaPatients.toCohortDefinitions(bundle.patients),
+      cohorts = convert.syntheaPatients.toCohorts(bundle.patients)
     )
   }
 
@@ -80,6 +89,23 @@ object FromSynthea {
       to_timestamp(column, "yyyy-MM-dd")
     }
 
+    object syntheaConcepts {
+      def toFhirConcepts(condition_df: DataFrame, procedure_df: DataFrame): DataFrame = {
+        import fr.aphp.wind.eds.generator.uuidLong
+
+        condition_df.select("code", "description")
+          .union(procedure_df.select("code", "description"))
+          .dropDuplicates("code")
+          .withColumn("concept_id", uuidLong)
+          .withColumn("vocabulary_reference", lit("SNOMED"))
+          .withColumn("fhir_concept_code", 'code)
+          .withColumn("fhir_concept_name", 'description)
+          .withColumn("fhir_vocabulary_reference", lit("SNOMED"))
+          .withColumnRenamed("code", "concept_code")
+          .withColumnRenamed("description", "concept_name")
+      }
+    }
+
     object syntheaPatients {
       def toPersons(df: DataFrame): DataFrame = {
         df.select("id", "gender", "birthdate", "deathdate")
@@ -113,6 +139,48 @@ object FromSynthea {
           .reduce {
             _ union _
           }
+      }
+
+      def toLocations(df: DataFrame): DataFrame = {
+        import fr.aphp.wind.eds.generator.uuidLong
+
+        df.select("address", "city", "state", "lat", "lon")
+          .withColumn("location_id", uuidLong)
+          .withColumn("lat", col("lat").cast(DoubleType))
+          .withColumn("lon", col("lon").cast(DoubleType))
+          .withColumnRenamed("lat", "latitude")
+          .withColumnRenamed("lon", "longitude")
+      }
+
+      def toCohortDefinitions(df: DataFrame): DataFrame = {
+        df.select("id")
+          .withColumn("cohort_definition_id", lit(1L))
+          .withColumn("owner_entity_id", lit(1L))
+          .withColumn("cohort_definition_description", lit("A synthetic cohort definition"))
+          .withColumn("cohort_definition_name", lit("Synthetic cohort"))
+          .withColumn("cohort_definition_syntax", lit(""))
+          .withColumn("cohort_initiation_datetime", fromSyntheaDatetime(lit(null)))
+          .withColumn("cohort_size", lit(df.count()))
+          .withColumn("owner_domain_id", lit(""))
+          .withColumn("invalid_reason", lit(""))
+          .withColumn("subject_concept_id", lit(1147314L))
+          .withColumn("valid_end_datetime", fromSyntheaDatetime(lit(null)))
+          .withColumn("valid_start_datetime", fromSyntheaDatetime(lit(null)))
+          .drop("id")
+      }
+
+      def toCohorts(df: DataFrame): DataFrame = {
+        import fr.aphp.wind.eds.generator.uuidLong
+
+        df.select("id")
+          .withColumn("cohort_id", uuidLong)
+          .withColumn("delete_datetime", fromSyntheaDatetime(lit(null)))
+          .withColumn("cohort_end_datetime", fromSyntheaDatetime(lit(null)))
+          .withColumn("invalid_reason", lit(""))
+          .withColumn("cohort_start_datetime", fromSyntheaDatetime(lit(null)))
+          .withColumn("cohort_definition_id", lit(1L))
+          .withColumn("subject_id", omopId('id))
+          .drop("id")
       }
     }
 
@@ -157,6 +225,38 @@ object FromSynthea {
             "visit_concept_id",
             "visit_type_concept_id"
           )
+      }
+
+      def toNotes(df : DataFrame): DataFrame = {
+        import fr.aphp.wind.eds.generator.uuidLong
+
+        df.select("id", "patient", "provider", "organization", "start")
+          .withColumn("note_id", uuidLong)
+          .withColumn("care_site_id", omopId('organization))
+          .withColumn("note_class_concept_id", lit(44814639L))
+          .withColumn("note_class_source_value", lit(""))
+          .withColumn("note_datetime", fromSyntheaDatetime('start))
+          .withColumn("note_event_field_concept_id", lit(1147332L))
+          .withColumn("note_title", lit("A simple lorem ipsum"))
+          /** http://athena.ohdsi.org/search-terms/terms?conceptClass=Note+Type&domain=Type+Concept */
+          .withColumn("note_type_concept_id", lit(44814639L))
+          .withColumn("note_type_source_value", lit(""))
+          .withColumn("person_id", omopId('patient))
+          .withColumn("provider_id", omopId('provider))
+          .withColumn("visit_detail_id", omopId('id))
+          .withColumn("visit_occurrence_id", omopId('id))
+          .withColumn("note_text", lit("""Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                                        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."""))
+          .withColumn("delete_datetime", fromSyntheaDatetime(lit(null)))
+          .withColumn("encoding_concept_id", lit(0L))
+          .withColumn("insert_datetime", fromSyntheaDatetime('start))
+          .withColumn("is_pdf_available", lit(false))
+          .withColumn("language_concept_id", lit(4180186L))
+          .withColumn("note_event_id", omopId('id))
+          .withColumn("update_datetime", fromSyntheaDatetime('start))
+          .withColumn("note_class_source_concept_id", lit(0L))
+          .withColumn("row_status_source_concept_id", lit(0L))
+          .drop("id", "patient", "provider", "organization", "start")
       }
     }
 
@@ -205,6 +305,18 @@ object FromSynthea {
           .withColumn("person_id", omopId('patient))
           .withColumn("visit_occurrence_id", omopId('encounter))
           .drop("patient", "encounter")
+      }
+
+      def toCosts(df: DataFrame): DataFrame = {
+        import fr.aphp.wind.eds.generator.uuidLong
+
+        df.select("patient", "date")
+          .withColumn("cost_id", uuidLong)
+          .withColumn("incurred_datetime", fromSyntheaDate('date))
+          .withColumn("person_id", omopId('patient))
+          .withColumn("drg_source_concept_id", lit(0L))
+          .withColumn("row_status_source_concept_id", lit(0L))
+          .drop("patient", "date")
       }
     }
 

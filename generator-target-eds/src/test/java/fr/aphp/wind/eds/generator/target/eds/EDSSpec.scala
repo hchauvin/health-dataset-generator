@@ -18,13 +18,19 @@ class EDSSpec extends AnyFlatSpec
     }
 
     val bundle = EDSDataBundle(
+      fhirConcepts = spark.createDataFrame(sc.emptyRDD[Row], EDSDataBundle.schemas("fhirConcepts")),
       persons = spark.createDataFrame(sc.emptyRDD[Row], EDSDataBundle.schemas("persons")),
       observations = spark.createDataFrame(sc.emptyRDD[Row], EDSDataBundle.schemas("observations")),
       visitOccurrences = spark.createDataFrame(sc.emptyRDD[Row], EDSDataBundle.schemas("visitOccurrences")),
+      notes = spark.createDataFrame(sc.emptyRDD[Row], EDSDataBundle.schemas("notes"))
       careSites = spark.createDataFrame(sc.emptyRDD[Row], EDSDataBundle.schemas("careSite")),
       conditionOccurrences = spark.createDataFrame(sc.emptyRDD[Row], EDSDataBundle.schemas("conditionOccurrences")),
       procedureOccurrences = spark.createDataFrame(sc.emptyRDD[Row], EDSDataBundle.schemas("procedureOccurrences")),
-      providers = spark.createDataFrame(sc.emptyRDD[Row], EDSDataBundle.schemas("providers"))
+      providers = spark.createDataFrame(sc.emptyRDD[Row], EDSDataBundle.schemas("providers")),
+      costs = spark.createDataFrame(sc.emptyRDD[Row], EDSDataBundle.schemas("costs")),
+      locations = spark.createDataFrame(sc.emptyRDD[Row], EDSDataBundle.schemas("locations")),
+      cohortDefinitions = spark.createDataFrame(sc.emptyRDD[Row], EDSDataBundle.schemas("cohortDefinitions")),
+      cohorts = spark.createDataFrame(sc.emptyRDD[Row], EDSDataBundle.schemas("cohorts"))
     )
 
     new EDSDataBundle(bundle.genericBundle)

@@ -23,23 +23,35 @@ package object eds {
     * with the healthcare system.
     */
   case class EDSDataBundle(
+      fhirConcepts: DataFrame,
       persons: DataFrame,
       observations: DataFrame,
       visitOccurrences: DataFrame,
+      notes: DataFrame,
       careSites: DataFrame,
       conditionOccurrences: DataFrame,
       procedureOccurrences: DataFrame,
-      providers: DataFrame
+      providers: DataFrame,
+      costs: DataFrame,
+      locations: DataFrame,
+      cohortDefinitions: DataFrame,
+      cohorts: DataFrame
   ) {
     def this(bundle: GenericDataBundle) {
       this(
+        fhirConcepts = bundle("fhir_concepts"),
         persons = bundle("persons"),
         observations = bundle("observations"),
         visitOccurrences = bundle("visit_occurrences"),
+        notes = bundle("notes"),
         careSites = bundle("care_sites"),
         conditionOccurrences = bundle("condition_occurrences"),
         procedureOccurrences = bundle("procedure_occurrences"),
-        providers = bundle("providers")
+        providers = bundle("providers"),
+        costs = bundle("costs"),
+        locations = bundle("locations"),
+        cohortDefinitions = bundle("cohort_definitions"),
+        cohorts = bundle("cohorts")
       )
     }
 
@@ -50,13 +62,19 @@ package object eds {
     def genericBundle: GenericDataBundle = {
       GenericDataBundle(
         Map(
+          "fhir_concepts" -> fhirConcepts,
           "persons" -> persons,
           "observations" -> observations,
           "visit_occurrences" -> visitOccurrences,
+          "notes" -> notes,
           "care_sites" -> careSites,
           "condition_occurrences" -> conditionOccurrences,
           "procedure_occurrences" -> procedureOccurrences,
-          "providers" -> providers
+          "providers" -> providers,
+          "costs" -> costs,
+          "locations" -> locations,
+          "cohort_definitions" -> cohortDefinitions,
+          "cohorts" -> cohorts
         )
       )
     }
@@ -86,13 +104,19 @@ package object eds {
       * The AP-HP specific schemas.  The keys are the table/dataframe names.
       */
     val schemas: Map[String, StructType] = Map(
+      "fhir_concepts" -> "concept_fhir.avro",
       "persons" -> "person.avro",
       "observations" -> "observation.avro",
       "visit_occurrences" -> "visit_occurrence.avro",
+      "notes" -> "note.avro",
       "care_sites" -> "care_site.avro",
       "condition_occurrences" -> "condition_occurrence.avro",
       "procedure_occurrences" -> "procedure_occurrence.avro",
-      "providers" -> "provider.avro"
+      "providers" -> "provider.avro",
+      "costs" -> "cost.avro",
+      "locations" -> "location.avro",
+      "cohort_definitions" -> "cohort_definition.avro",
+      "cohorts" -> "cohort.avro"
     ).mapValues(fileName => {
       val schemaJSON = Source
         .fromResource(
