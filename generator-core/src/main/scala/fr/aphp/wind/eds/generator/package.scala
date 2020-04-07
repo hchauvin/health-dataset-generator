@@ -32,8 +32,8 @@ package object generator {
   lazy val uuidLong: Column = {
     val uuidLongUDF: UserDefinedFunction = {
       import org.apache.spark.sql.functions.udf
-      val scale = math.pow(2, 7)
-      udf((x: Double) => (BigDecimal(x) * scale).toLongExact)
+      val scale = math.pow(10, 7)
+      udf((x: Double) => 1L + (x * scale).toLong)
     }
 
     import org.apache.spark.sql.functions.rand
