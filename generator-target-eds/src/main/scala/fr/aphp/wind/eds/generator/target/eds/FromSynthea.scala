@@ -17,8 +17,8 @@ object FromSynthea {
     */
   def apply(bundle: SyntheaDataBundle): EDSDataBundle = {
     EDSDataBundle(
-      fhirConcepts =
-        convert.syntheaConcepts.toFhirConcepts(bundle.conditions, bundle.procedures),
+      fhirConcepts = convert.syntheaConcepts
+        .toFhirConcepts(bundle.conditions, bundle.procedures),
       persons = convert.syntheaPatients.toPersons(bundle.patients),
       observations = convert.syntheaPatients.toObservations(bundle.patients),
       visitOccurrences =
@@ -90,10 +90,14 @@ object FromSynthea {
     }
 
     object syntheaConcepts {
-      def toFhirConcepts(condition_df: DataFrame, procedure_df: DataFrame): DataFrame = {
+      def toFhirConcepts(
+          condition_df: DataFrame,
+          procedure_df: DataFrame
+      ): DataFrame = {
         import fr.aphp.wind.eds.generator.uuidLong
 
-        condition_df.select("code", "description")
+        condition_df
+          .select("code", "description")
           .union(procedure_df.select("code", "description"))
           .dropDuplicates("code")
           .withColumn("concept_id", uuidLong)
@@ -156,10 +160,16 @@ object FromSynthea {
         df.select("id")
           .withColumn("cohort_definition_id", lit(1L))
           .withColumn("owner_entity_id", lit(1L))
-          .withColumn("cohort_definition_description", lit("A synthetic cohort definition"))
+          .withColumn(
+            "cohort_definition_description",
+            lit("A synthetic cohort definition")
+          )
           .withColumn("cohort_definition_name", lit("Synthetic cohort"))
           .withColumn("cohort_definition_syntax", lit(""))
-          .withColumn("cohort_initiation_datetime", fromSyntheaDatetime(lit(null)))
+          .withColumn(
+            "cohort_initiation_datetime",
+            fromSyntheaDatetime(lit(null))
+          )
           .withColumn("cohort_size", lit(df.count()))
           .withColumn("owner_domain_id", lit(""))
           .withColumn("invalid_reason", lit(""))
@@ -227,7 +237,7 @@ object FromSynthea {
           )
       }
 
-      def toNotes(df : DataFrame): DataFrame = {
+      def toNotes(df: DataFrame): DataFrame = {
         import fr.aphp.wind.eds.generator.uuidLong
 
         df.select("id", "patient", "provider", "organization", "start")
@@ -245,8 +255,13 @@ object FromSynthea {
           .withColumn("provider_id", omopId('provider))
           .withColumn("visit_detail_id", omopId('id))
           .withColumn("visit_occurrence_id", omopId('id))
-          .withColumn("note_text", lit("""Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                                        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."""))
+          .withColumn(
+            "note_text",
+            lit(
+              """Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                                        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."""
+            )
+          )
           .withColumn("delete_datetime", fromSyntheaDatetime(lit(null)))
           .withColumn("encoding_concept_id", lit(0L))
           .withColumn("insert_datetime", fromSyntheaDatetime('start))
