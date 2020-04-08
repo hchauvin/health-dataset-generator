@@ -28,8 +28,12 @@ jobs:
       - run:
           name: Push Docker images
           command: |
-            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-            ./make.py docker_push
+            if [[ "$CIRCLE_BRANCH" == "master" ]]; then
+              echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+              ./make.py docker_push
+            else
+              echo "Skipped"
+            fi
       - save_cache:
           key: sbt-cache
           paths:
