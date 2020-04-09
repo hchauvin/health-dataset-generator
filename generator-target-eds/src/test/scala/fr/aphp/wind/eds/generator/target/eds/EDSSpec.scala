@@ -12,7 +12,6 @@ class EDSSpec extends AnyFlatSpec with Matchers with DataFrameSuiteBase {
   it should "convert to a generic bundle" in {
     val bundle = EDSDataBundle.empty
     val nextBundle = new EDSDataBundle(bundle.genericBundle)
-    nextBundle.genericBundle.collect()
   }
 
   behavior of "builtinsFhirConcepts"
