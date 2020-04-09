@@ -12,7 +12,7 @@ import org.apache.spark.sql.types.{
   StructField,
   StructType
 }
-import org.apache.spark.sql.{DataFrame, Dataset, Row, SparkSession}
+import org.apache.spark.sql.{DataFrame, Dataset, Row, SaveMode, SparkSession}
 
 /**
   * Manipulates bundles of dataframes, including schema validation.
@@ -61,6 +61,28 @@ package object data {
       */
     def coalesce(partitions: Int): GenericDataBundle = {
       coalesce(dataFrames.mapValues(_ => partitions))
+    }
+
+    /**
+      * Collects all the dataframes.
+      */
+    def collect(): Map[String, Array[Row]] = {
+      dataFrames.map {
+        case (name, df) =>
+          try {
+            (name, df.collect())
+          } catch {
+            case e: Exception =>
+              throw new RuntimeException(s"cannot collect table ${name}")
+          }
+      }.toMap
+    }
+
+    /** Caches all the dataframes. */
+    def cache(): GenericDataBundle = {
+      GenericDataBundle(
+        dataFrames.mapValues { _.cache() }
+      )
     }
 
     /**
@@ -132,7 +154,10 @@ package object data {
     ): Unit = {
       dataFrames.par.foreach {
         case (tableName, df) =>
-          df.write.jdbc(jdbcURL, renameTable(tableName), connectionProperties)
+          df.write
+            .mode(SaveMode.Append)
+            .option("cascadeTruncate", "true")
+            .jdbc(jdbcURL, renameTable(tableName), connectionProperties)
       }
     }
 
