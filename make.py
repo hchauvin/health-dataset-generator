@@ -41,7 +41,7 @@ class Docker:
         self.env = env
         self.dockerfile = dockerfile
 
-    def docker_run(self, build, volumes):
+    def docker_run(self, build, volumes, extra_parameters):
         if build:
             self.docker_build()
 
@@ -56,6 +56,7 @@ class Docker:
                 ]
         for v in volumes:
             args += ["-v", v]
+        args += [f'--{p}' for p in extra_parameters]
         args += [
             "-p", "127.0.0.1:8192:8192", "-p", "127.0.0.1:4040-4050:4040-4050",
             Docker.DOCKER_IMAGE
@@ -156,7 +157,7 @@ class Make:
         parser = argparse.ArgumentParser(
             description='Make',
             usage="make <command> [<args>]")
-        subcommands = [attr for attr in dir(self) if not attr.startswith("__")]
+        subcommands = [attr for attr in dir(self) if not attr.startswith("_") and callable(getattr(self, attr))]
         parser.add_argument('command',
                             help='Subcommand to run: one of ' + " ".join(
                                 subcommands))
@@ -172,10 +173,16 @@ class Make:
             description='Run the docker image')
         parser.add_argument('-b', '--build', dest='build', action='store_true',
                             help='build the image beforehand')
-        parser.add_argument('-v', '--volume', nargs='*',
+        parser.add_argument('-v', '--volume', action='append',
                             help='A volume to mount')
+        parser.add_argument('--docker', action='append',
+                            help='Extra parameter to pass to "docker run". Example: ' +
+                                 '--docker=net=app_default')
         args = parser.parse_args(sys.argv[2:])
-        self._docker().docker_run(build=args.build, volumes=args.volume)
+        self._docker().docker_run(
+            build=args.build,
+            volumes=args.volume or [],
+            extra_parameters=args.docker or [])
 
     def docker_build(self):
         parser = argparse.ArgumentParser(

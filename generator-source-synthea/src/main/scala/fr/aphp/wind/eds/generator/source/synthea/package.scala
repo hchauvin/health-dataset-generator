@@ -72,14 +72,7 @@ package object synthea {
       val spark = SparkSession.active
       new SyntheaDataBundle(
         GenericDataBundle(
-          Seq(
-            "patients",
-            "encounters",
-            "organizations",
-            "conditions",
-            "procedures",
-            "providers"
-          ).par
+          tables.par
             .map(table =>
               (
                 table,
@@ -117,4 +110,14 @@ package object synthea {
 
     SyntheaDataBundle.fromCsvs("file://" + baseDirectory)
   }
+
+  /** The synthea tables. */
+  val tables: Seq[String] = Seq(
+    "patients",
+    "encounters",
+    "organizations",
+    "conditions",
+    "procedures",
+    "providers"
+  )
 }
