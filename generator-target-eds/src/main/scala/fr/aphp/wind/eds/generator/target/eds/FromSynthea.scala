@@ -7,6 +7,7 @@ import fr.aphp.wind.eds.generator.source.synthea.SyntheaDataBundle
 import org.apache.spark.sql.expressions.UserDefinedFunction
 import org.apache.spark.sql.{Column, DataFrame, Row, SparkSession}
 import org.apache.spark.sql.types.{DoubleType, LongType}
+import fr.aphp.wind.eds.generator.uuidLong
 
 /** Converts a data bundle produced by Synthea to the format expected by the EDS.  */
 object FromSynthea {
@@ -100,7 +101,6 @@ object FromSynthea {
           condition_df: DataFrame,
           procedure_df: DataFrame
       ): DataFrame = {
-        import fr.aphp.wind.eds.generator.uuidLong
 
         condition_df
           .select("code", "description")
@@ -159,7 +159,8 @@ object FromSynthea {
             when('gender_concept_id === 8507L, 1001L)
               .when('gender_concept_id === 8532L, 1002L)
           )
-          .withColumn("row_status_source_concept_id", typedLit(1003L))
+          // Status set to "active".
+          .withColumn("row_status_source_concept_id", typedLit(2008111363L))
       }
 
       def toObservations(df: DataFrame): DataFrame = {
@@ -186,7 +187,6 @@ object FromSynthea {
       }
 
       def toLocations(df: DataFrame): DataFrame = {
-        import fr.aphp.wind.eds.generator.uuidLong
 
         df.select("address", "city", "state", "lat", "lon")
           .withColumn("location_id", uuidLong)
@@ -241,7 +241,6 @@ object FromSynthea {
       }
 
       def toNotes(df: DataFrame): DataFrame = {
-        import fr.aphp.wind.eds.generator.uuidLong
 
         df.select("id", "patient", "provider", "organization", "start")
           .withColumn("note_id", uuidLong)
@@ -289,7 +288,6 @@ object FromSynthea {
 
     object syntheaConditions {
       def toConditionOccurrences(df: DataFrame): DataFrame = {
-        import fr.aphp.wind.eds.generator.uuidLong
 
         df.select("start", "stop", "encounter", "patient", "code")
           .withColumn("condition_occurrence_id", uuidLong)
@@ -312,7 +310,6 @@ object FromSynthea {
 
     object syntheaProcedures {
       def toProcedureOccurrences(df: DataFrame): DataFrame = {
-        import fr.aphp.wind.eds.generator.uuidLong
 
         df.select("code", "date", "patient", "encounter")
           .withColumn("procedure_occurrence_id", uuidLong)
@@ -326,7 +323,6 @@ object FromSynthea {
       }
 
       def toCosts(df: DataFrame): DataFrame = {
-        import fr.aphp.wind.eds.generator.uuidLong
 
         df.select("patient", "date")
           .withColumn("cost_id", uuidLong)

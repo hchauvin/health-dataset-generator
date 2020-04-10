@@ -8,3 +8,4 @@ generator-target-eds/target
 /Dockerfile.nobuildkit
 .DS_Store
 .cache
+/repo

@@ -1,13 +1,11 @@
 package fr.aphp.wind.eds.generator.target.eds
 
-import java.io.File
-
 import com.holdenkarau.spark.testing.DataFrameSuiteBase
 import fr.aphp.wind.eds.data.DFSupplyCache
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import fr.aphp.wind.eds.generator.source.synthea
 import fr.aphp.wind.eds.generator.source.synthea.SyntheaDataBundle
+import fr.aphp.wind.eds.generator.source.synthea
 
 class FromSyntheaSpec
     extends AnyFlatSpec

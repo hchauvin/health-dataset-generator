@@ -122,10 +122,18 @@ class Dev:
              f"{cwd}/third-party"], check=True)
         run(["docker", "rm", third_party_container_name], check=True)
 
+        run(["mvn", "install:install-file",
+             f"-Dfile={cwd}third-party/synthea-with-dependencies.jar",
+             "-DgroupId=org.mitre.synthea",
+             "-DartifactId=synthea",
+             "-Dversion=2.6.0-SNAPSHOT",
+             "-DlocalRepositoryPath={cwd}/repo",
+             "-Dpackaging=jar"], check=True)
+
     def dev_package(self):
         self._ensure_third_party()
         run(["mvn", "package", "-T 1.5C", "-Dmaven.test.skip=true",
-             "-DskipTests"], check=True)
+             "-DskipTests", "-P", "generator-target-eds-fat-jar"], check=True)
 
     def dev_test(self):
         self._ensure_third_party()
