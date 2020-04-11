@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2020 Hadrien Chauvin
+
 package fr.aphp.wind.eds.generator.target
 
 import fr.aphp.wind.eds.data.{GenericDataBundle, Validation}
