@@ -29,6 +29,7 @@ object FromSynthea {
       observations = convert.syntheaPatients.toObservations(bundle.patients),
       visitOccurrences =
         convert.syntheaEncounters.toVisitOccurrences(bundle.encounters),
+      visitDetail = emptyDF("visit_detail"),
       notes = convert.syntheaEncounters.toNotes(bundle.encounters),
       careSites =
         convert.syntheaOrganizations.toCareSites(bundle.organizations),
@@ -42,7 +43,8 @@ object FromSynthea {
       cohortDefinitions = emptyDF("cohort_definition"),
       cohorts = emptyDF("cohort"),
       role = emptyDF("role"),
-      careSiteHistory = emptyDF("care_site_history")
+      careSiteHistory = emptyDF("care_site_history"),
+      factRelationship = emptyDF("fact_relationship")
     )
   }
 
@@ -274,8 +276,8 @@ object FromSynthea {
           .withColumn("language_concept_id", lit(4180186L))
           .withColumn("note_event_id", omopId('id))
           .withColumn("update_datetime", fromSyntheaDatetime('start))
-          .withColumn("note_class_source_concept_id", lit(0L))
-          .withColumn("row_status_source_concept_id", lit(0L))
+          //.withColumn("note_class_source_concept_id", lit(0L))
+          .withColumn("row_status_source_concept_id", lit(1003L))
           .drop("id", "patient", "provider", "organization", "start")
       }
     }
@@ -322,18 +324,21 @@ object FromSynthea {
           .drop("date")
           .withColumn("person_id", omopId('patient))
           .withColumn("visit_occurrence_id", omopId('encounter))
+          .withColumn("row_status_source_concept_id", lit(4082735L))
           .drop("patient", "encounter")
       }
 
       def toCosts(df: DataFrame): DataFrame = {
 
-        df.select("patient", "date")
+        df.select("patient", "date", "encounter")
           .withColumn("cost_id", uuidLong)
           .withColumn("incurred_datetime", fromSyntheaDate('date))
           .withColumn("person_id", omopId('patient))
-          .withColumn("drg_source_concept_id", lit(0L))
-          .withColumn("row_status_source_concept_id", lit(0L))
-          .drop("patient", "date")
+          .withColumn("drg_source_concept_id", lit(1005L))
+          .withColumn("row_status_source_concept_id", lit(1004L))
+          .withColumn("cost_event_field_concept_id", lit(1147624L)) // visit_detail
+          .withColumn("cost_event_id", omopId('encounter))
+          .drop("patient", "date", "encounter")
       }
     }
 
