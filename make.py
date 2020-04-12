@@ -127,7 +127,7 @@ class Dev:
              "-DgroupId=org.mitre.synthea",
              "-DartifactId=synthea",
              "-Dversion=2.6.0-SNAPSHOT",
-             "-DlocalRepositoryPath={cwd}/repo",
+             f"-DlocalRepositoryPath={cwd}/repo",
              "-Dpackaging=jar"], check=True)
 
     def dev_package(self):
