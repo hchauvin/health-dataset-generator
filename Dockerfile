@@ -19,7 +19,7 @@ RUN ./gradlew uberJar
 # ==================================================================================================
 # Gather third-party dependencies
 
-FROM ubuntu as third-party
+FROM ubuntu@sha256:bec5a2727be7fff3d308193cfde3491f8fba1a2ba392b7546b43a051853a341d as third-party
 
 COPY --from=synthea \
   /opt/synthea/build/libs/synthea-with-dependencies.jar \
