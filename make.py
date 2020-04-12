@@ -123,7 +123,7 @@ class Dev:
         run(["docker", "rm", third_party_container_name], check=True)
 
         run(["mvn", "install:install-file",
-             f"-Dfile={cwd}third-party/synthea-with-dependencies.jar",
+             f"-Dfile={cwd}/third-party/synthea-with-dependencies.jar",
              "-DgroupId=org.mitre.synthea",
              "-DartifactId=synthea",
              "-Dversion=2.6.0-SNAPSHOT",
