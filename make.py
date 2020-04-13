@@ -18,12 +18,13 @@ class Docker:
     Args:
         with_buildkit: Whether to run with buildkit support (not available on
             some runtimes).
+        with_cache_from: Whether to use the --cache-from option.
     """
 
     DOCKER_IMAGE = "hchauvin/eds-generator-notebooks"
     CONTAINER_NAME = "eds-generator-notebooks"
 
-    def __init__(self, with_buildkit):
+    def __init__(self, with_buildkit, with_cache_from):
         env = {**os.environ, "DOCKER_BUILDKIT": "1" if with_buildkit else "0"}
 
         if with_buildkit:
@@ -40,6 +41,7 @@ class Docker:
 
         self.env = env
         self.dockerfile = dockerfile
+        self.with_cache_from = with_cache_from
 
     def docker_run(self, build, volumes, extra_parameters):
         if build:
@@ -65,9 +67,12 @@ class Docker:
         run(args, check=True)
 
     def docker_build(self, tag=DOCKER_IMAGE, target=None):
-        args = ["docker", "build", "-f", self.dockerfile, "-t", tag,
+        args = ["docker", "build", "-f", self.dockerfile, "-t", tag]
+        if self.with_cache_from:
+            args += [
                 "--cache-from", Docker.DOCKER_IMAGE,
-                "--cache-from", self.intermediate_docker_image("third-party")]
+                "--cache-from", self.intermediate_docker_image("third-party"),
+            ]
         if target:
             args += ["--target", target]
         args += ["."]
@@ -231,11 +236,18 @@ class Make:
     def _docker(self):
         # We enable buildkit by default
         with_buildkit = True
-        if os.environ.get("CIRCLECI"):
-            # Buildkit is not currently supported in CIRCLECI
-            with_buildkit = False
 
-        return Docker(with_buildkit=with_buildkit)
+        # We enable --cache-from by default
+        with_cache_from = True
+        if os.environ.get("CIRCLECI"):
+            # Docker version is too old on CircleCI to support --cache-from.
+            # See https://github.com/moby/buildkit/issues/569 for the 
+            # underlying issue.
+            with_cache_from = False
+
+        return Docker(
+            with_buildkit=with_buildkit,
+            with_cache_from=with_cache_from)
 
     def _dev(self):
         return Dev(self._docker())
