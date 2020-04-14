@@ -114,6 +114,7 @@ class Docker:
         with open('target/image_id.txt', 'r') as f:
             image_id = f.read().strip()
         imgref = content_addressable_imgref(Docker.DOCKER_IMAGE, image_id)
+        run(['docker', 'tag', image_id, imgref], check=True, env=self.env)
         with open('target/image_reference.txt', 'w') as f:
             f.write(imgref)
 
