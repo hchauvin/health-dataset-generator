@@ -156,7 +156,7 @@ class Dev:
     def __init__(self, docker):
         self.docker = docker
 
-    def dev_third_party(self):
+    def third_party(self):
         third_party_docker_image = self.docker.intermediate_docker_image(
             "third-party")
         third_party_container_name = self.docker.intermediate_container_name(
@@ -192,7 +192,7 @@ class Dev:
         ],
             check=True)
 
-    def dev_package(self):
+    def package(self):
         self._ensure_third_party()
         run([
             "mvn", "package", "-T 1.5C", "-Dmaven.test.skip=true",
@@ -200,11 +200,11 @@ class Dev:
         ],
             check=True)
 
-    def dev_test(self):
+    def test(self):
         self._ensure_third_party()
         run(["mvn", "test"], check=True)
 
-    def dev_format(self):
+    def format(self):
         self._ensure_third_party()
         run([
             "mvn", "validate", "-T 1.5C", "-Dformat.check=false",
@@ -212,7 +212,7 @@ class Dev:
         ],
             check=True)
 
-    def dev_format_check(self):
+    def format_check(self):
         self._ensure_third_party()
         run([
             "mvn", "validate", "-T 1.5C", "-Dformat.check=true",
@@ -222,7 +222,7 @@ class Dev:
 
     def _ensure_third_party(self):
         if not Path("third-party").exists():
-            self.dev_third_party()
+            self.third_party()
 
 
 class Make:
@@ -279,28 +279,28 @@ class Make:
         args = parser.parse_args(sys.argv[2:])
         self._docker().docker_push()
 
-    def dev_third_party(self):
+    def third_party(self):
         parser = argparse.ArgumentParser(
             description="Download/compile third-party dependencies and " +
             "put them in the 'third-party' directory")
         args = parser.parse_args(sys.argv[2:])
-        self._dev().dev_third_party()
+        self._dev().third_party()
 
-    def dev_test(self):
+    def test(self):
         parser = argparse.ArgumentParser(description="Execute tests")
         args = parser.parse_args(sys.argv[2:])
-        self._dev().dev_test()
+        self._dev().test()
 
-    def dev_format(self):
+    def format(self):
         parser = argparse.ArgumentParser(description='Format source files')
         args = parser.parse_args(sys.argv[2:])
-        self._dev().dev_format()
+        self._dev().format()
 
-    def dev_format_check(self):
+    def format_check(self):
         parser = argparse.ArgumentParser(
             description='Check source file formatting')
         args = parser.parse_args(sys.argv[2:])
-        self._dev().dev_format_check()
+        self._dev().format_check()
 
     def _docker(self):
         # We enable buildkit by default
