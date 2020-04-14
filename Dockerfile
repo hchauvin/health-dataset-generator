@@ -59,7 +59,7 @@ RUN --mount=type=cache,id=m2,target=/root/.m2 \
   --mount=type=cache,target=/opt/generator/generator-core/target \
   --mount=type=cache,target=/opt/generator/generator-source-synthea/target \
   --mount=type=cache,target=/opt/generator/generator-target-eds/target \
-  mvn package -T 1.5C -Dmaven.test.skip=true -DskipTests && \
+  mvn package -T 1.5C -Dmaven.test.skip=true -DskipTests -P generator-target-eds-fat-jar && \
   mv /opt/generator/generator-target-eds/target/generator-target-eds-jar-with-dependencies.jar \
     /opt/generator/generator-target-eds-jar-with-dependencies.jar
 
