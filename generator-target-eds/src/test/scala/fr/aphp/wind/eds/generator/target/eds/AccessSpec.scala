@@ -53,34 +53,39 @@ class AccessSpec extends AnyFlatSpec with Matchers with DataFrameSuiteBase {
 
     val bundle = EDSDataBundle.empty
       .copy(persons = Seq(123L, 456L).toDF("person_id"))
-      .checkpoint(allowMissingFields=true)
+      .checkpoint(allowMissingFields = true)
       .withRootProvider("foo")
-      .checkpoint(allowMissingFields=true)
+      .checkpoint(allowMissingFields = true)
       .cache()
 
     bundle.genericBundle.collect()
 
     val providers = bundle.providers.collect()
-    providers should have length(1)
+    providers should have length (1)
     providers(0).getAs[String]("provider_source_value") should equal("foo")
     val providerId = providers(0).getAs[Long]("provider_id")
 
     val careSites = bundle.careSites.collect()
-    careSites should have length(1)
+    careSites should have length (1)
     val careSiteId = careSites(0).getAs[Long]("care_site_id")
 
     val careSiteHistory = bundle.careSiteHistory.collect()
-    careSiteHistory should have length(1)
+    careSiteHistory should have length (1)
     careSiteHistory(0).getAs[Long]("care_site_id") should equal(careSiteId)
     careSiteHistory(0).getAs[Long]("entity_id") should equal(providerId)
 
     val cohortDefinitions = bundle.cohortDefinitions.collect()
-    cohortDefinitions should have length(1)
-    val cohortDefinitionId = cohortDefinitions(0).getAs[Long]("cohort_definition_id")
+    cohortDefinitions should have length (1)
+    val cohortDefinitionId =
+      cohortDefinitions(0).getAs[Long]("cohort_definition_id")
 
     val cohorts = bundle.cohorts.collect()
-    cohorts should have length(2)
-    cohorts.map { _.getAs[Long]("cohort_definition_id") }.toSet should equal(Set(cohortDefinitionId))
-    cohorts.map { _.getAs[Long]("subject_id") }.toSet should equal(Set(123L, 456L))
+    cohorts should have length (2)
+    cohorts.map { _.getAs[Long]("cohort_definition_id") }.toSet should equal(
+      Set(cohortDefinitionId)
+    )
+    cohorts.map { _.getAs[Long]("subject_id") }.toSet should equal(
+      Set(123L, 456L)
+    )
   }
 }

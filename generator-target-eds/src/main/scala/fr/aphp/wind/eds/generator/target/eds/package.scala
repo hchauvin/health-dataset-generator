@@ -283,7 +283,15 @@ package object eds {
           "FIXME",
           "FIXME"
         ),
-        (2008111363L, "Actif", "actif", "name", "not used", "not used", "not used"),
+        (
+          2008111363L,
+          "Actif",
+          "actif",
+          "name",
+          "not used",
+          "not used",
+          "not used"
+        ),
         (
           2002861901L,
           "3042942",

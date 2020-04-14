@@ -121,17 +121,17 @@ object access {
     }
 
     /**
-     * Adds a provider that has access to all the patients ("root access").
-     *
-     * This is done by having a cohort definition that includes all the patients
-     * and to which this "root" provider has access.
-     *
-     * @param username The username, or "provider_source_value", of the provider.
-     *                 This username can be used for authentication by other
-     *                 systems.
-     * @return A bundle with the new provider and related entries to set up
-     *         their access rights.
-     */
+      * Adds a provider that has access to all the patients ("root access").
+      *
+      * This is done by having a cohort definition that includes all the patients
+      * and to which this "root" provider has access.
+      *
+      * @param username The username, or "provider_source_value", of the provider.
+      *                 This username can be used for authentication by other
+      *                 systems.
+      * @return A bundle with the new provider and related entries to set up
+      *         their access rights.
+      */
     def withRootProvider(username: String = "ROOT"): EDSDataBundle = {
       val sqlContext = SparkSession.active.sqlContext
       import sqlContext.implicits._
@@ -142,28 +142,46 @@ object access {
 
       val personIds = bundle.persons.select('person_id.as[Long])
 
-      bundle.copy(
-        careSites = bundle.careSites
+      bundle
+        .copy(
+          careSites = bundle.careSites
             .select("care_site_id", "care_site_name")
-            .union((Seq(
-              (careSiteId, "ROOT")
-            ).toDF("care_site_id", "care_site_name"))),
-        providers = bundle.providers
-            .select("provider_id", "provider_source_value", "npi",
-              "dea", "care_site_id", "is_active", "gender_concept_id")
-            .union(Seq(
-              (providerId, username, "ROOT", "ROOT", careSiteId, true, 8532L)
-            ).toDF("provider_id", "provider_source_value", "npi",
-              "dea", "care_site_id", "is_active", "gender_concept_id"))
-        ).withStandardRoles()
-          .withProviderRoles(Seq(
-            ProviderRole(
-              standardRoles.carer,
-              providerId,
-              careSiteId)
-          ).toDS())
-        .withCohorts(
-          Seq(CohortSpec("ALL", careSiteId, personIds)))
+            .union(
+              (Seq(
+                (careSiteId, "ROOT")
+              ).toDF("care_site_id", "care_site_name"))
+            ),
+          providers = bundle.providers
+            .select(
+              "provider_id",
+              "provider_source_value",
+              "npi",
+              "dea",
+              "care_site_id",
+              "is_active",
+              "gender_concept_id"
+            )
+            .union(
+              Seq(
+                (providerId, username, "ROOT", "ROOT", careSiteId, true, 8532L)
+              ).toDF(
+                "provider_id",
+                "provider_source_value",
+                "npi",
+                "dea",
+                "care_site_id",
+                "is_active",
+                "gender_concept_id"
+              )
+            )
+        )
+        .withStandardRoles()
+        .withProviderRoles(
+          Seq(
+            ProviderRole(standardRoles.carer, providerId, careSiteId)
+          ).toDS()
+        )
+        .withCohorts(Seq(CohortSpec("ALL", careSiteId, personIds)))
     }
   }
 

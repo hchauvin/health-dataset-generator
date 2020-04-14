@@ -336,7 +336,10 @@ object FromSynthea {
           .withColumn("person_id", omopId('patient))
           .withColumn("drg_source_concept_id", lit(1005L))
           .withColumn("row_status_source_concept_id", lit(1004L))
-          .withColumn("cost_event_field_concept_id", lit(1147624L)) // visit_detail
+          .withColumn(
+            "cost_event_field_concept_id",
+            lit(1147624L)
+          ) // visit_detail
           .withColumn("cost_event_id", omopId('encounter))
           .drop("patient", "date", "encounter")
       }
