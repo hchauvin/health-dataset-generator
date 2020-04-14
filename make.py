@@ -27,17 +27,18 @@ def content_addressable_imgref(image_repository, image_id):
 class Docker:
     """
     All Docker-related commands.
-
-    Args:
-        with_buildkit: Whether to run with buildkit support (not available on
-            some runtimes).
-        with_cache_from: Whether to use the --cache-from option.
     """
 
     DOCKER_IMAGE = "hchauvin/eds-generator-notebooks"
     CONTAINER_NAME = "eds-generator-notebooks"
 
     def __init__(self, with_buildkit, with_cache_from):
+        """
+        Args:
+            with_buildkit: Whether to run with buildkit support (not available on
+                some runtimes).
+            with_cache_from: Whether to use the --cache-from option.
+        """
         env = {**os.environ, "DOCKER_BUILDKIT": "1" if with_buildkit else "0"}
 
         if with_buildkit:
@@ -201,7 +202,7 @@ class Make:
 
     def __init__(self):
         parser = argparse.ArgumentParser(
-            description='Make',
+            description='Make health-dataset-generator',
             usage="make <command> [<args>]")
         subcommands = [attr for attr in dir(self) if not attr.startswith("_") and callable(getattr(self, attr))]
         parser.add_argument('command',
@@ -244,7 +245,8 @@ class Make:
 
     def dev_third_party(self):
         parser = argparse.ArgumentParser(
-            description="Download/compile third-party dependencies and put them in the 'third-party' directory")
+            description="Download/compile third-party dependencies and " +
+                        "put them in the 'third-party' directory")
         args = parser.parse_args(sys.argv[2:])
         self._dev().dev_third_party()
 

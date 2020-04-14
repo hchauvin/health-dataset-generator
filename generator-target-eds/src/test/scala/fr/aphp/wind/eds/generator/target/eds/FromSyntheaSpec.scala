@@ -22,7 +22,7 @@ class FromSyntheaSpec
 
     val syntheaBundle = new SyntheaDataBundle(
       cache.cache(
-        "synthea",
+        "synthea-test",
         synthea.tables,
         () => synthea.generate(1).genericBundle
       )
