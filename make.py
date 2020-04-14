@@ -11,6 +11,19 @@ from pathlib import Path
 from subprocess import run
 
 
+def content_addressable_imgref(image_repository, image_id):
+    """
+    Creates a content-addressable image reference for an image with a given
+    image ID to store in a given image repository: the resulting image
+    reference will uniquely address the content of the image.
+
+    Args:
+        image_repository: The repository to use in the image reference.
+        image_id: The ID of the image.
+    """
+    return image_repository + ':' + image_id[image_id.index(':')+1:][:40]
+
+
 class Docker:
     """
     All Docker-related commands.
@@ -47,7 +60,13 @@ class Docker:
         if build:
             self.docker_build()
 
-        run(["docker", "rm", "-f", Docker.CONTAINER_NAME], check=False,
+        if os.path.exists('target/image_reference.txt'):
+            with open('target/image_reference.txt', 'r') as f:
+                imgref = f.read().strip()
+        else:
+            imgref = Docker.DOCKER_IMAGE
+
+        run(["docker", "rm", "-f", imgref], check=False,
             capture_output=True, env=self.env)
 
         cwd = os.getcwd()
@@ -67,7 +86,10 @@ class Docker:
         run(args, check=True)
 
     def docker_build(self, tag=DOCKER_IMAGE, target=None):
-        args = ["docker", "build", "-f", self.dockerfile, "-t", tag]
+        os.makedirs("target", exist_ok=True)
+
+        args = ["docker", "build", "-f", self.dockerfile, "-t", tag,
+                "--iidfile", "target/image_id.txt"]
         if self.with_cache_from:
             args += [
                 "--cache-from", Docker.DOCKER_IMAGE,
@@ -77,6 +99,12 @@ class Docker:
             args += ["--target", target]
         args += ["."]
         run(args, check=True, env=self.env)
+
+        with open('target/image_id.txt', 'r') as f:
+            image_id = f.read().strip()
+        imgref = content_addressable_imgref(Docker.DOCKER_IMAGE, image_id)
+        with open('target/image_reference.txt', 'w') as f:
+            f.write(imgref)
 
     def docker_push(self):
         intermediate_docker_images = ["synthea", "third-party"]
@@ -88,6 +116,11 @@ class Docker:
 
         self.docker_build()
         run(["docker", "push", Docker.DOCKER_IMAGE], check=True, env=self.env)
+
+        with open('target/image_reference.txt', 'r') as f:
+            imgref = f.read().strip()
+        run(["docker", "tag", Docker.DOCKER_IMAGE, imgref], check=True, env=self.env)
+        run(["docker", "push", imgref], check=True, env=self.env)
 
     def intermediate_docker_image(self, name):
         return f"{Docker.DOCKER_IMAGE}-{name}"
