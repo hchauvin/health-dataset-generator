@@ -227,7 +227,9 @@ package object frictionless {
             dfReader.schema(schema)
           })
           .getOrElse(dfReader)
-        (resource.name, dfReaderWithSchema.load(resource.path.map { path + "/" + _ }: _*))
+        (resource.name, dfReaderWithSchema.load(resource.path.map {
+          path + "/" + _
+        }: _*))
       })
       .toMap
 
