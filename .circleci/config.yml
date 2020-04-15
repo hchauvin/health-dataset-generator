@@ -15,13 +15,13 @@ jobs:
           command: pyenv global 3.7.0
       - run:
           name: Install third party dependencies
-          command: ./make.py dev_third_party
+          command: ./make.py third_party
       - run:
           name: Check source code formatting
-          command: ./make.py dev_format_check
+          command: ./make.py format_check
       - run:
           name: Execute tests
-          command: ./make.py dev_test
+          command: ./make.py test
       - run:
           name: Build Docker image
           command: ./make.py docker_build
