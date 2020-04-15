@@ -1,13 +1,14 @@
-package fr.aphp.wind.eds.generator.target.eds
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2020 Hadrien Chauvin
 
-import java.io.File
+package fr.aphp.wind.eds.generator.target.eds
 
 import com.holdenkarau.spark.testing.DataFrameSuiteBase
 import fr.aphp.wind.eds.data.DFSupplyCache
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import fr.aphp.wind.eds.generator.source.synthea
 import fr.aphp.wind.eds.generator.source.synthea.SyntheaDataBundle
+import fr.aphp.wind.eds.generator.source.synthea
 
 class FromSyntheaSpec
     extends AnyFlatSpec
@@ -21,7 +22,7 @@ class FromSyntheaSpec
 
     val syntheaBundle = new SyntheaDataBundle(
       cache.cache(
-        "synthea",
+        "synthea-test",
         synthea.tables,
         () => synthea.generate(1).genericBundle
       )

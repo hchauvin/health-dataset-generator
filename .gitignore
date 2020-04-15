@@ -1,6 +1,7 @@
 /.idea
 *.iml
 output
+/target
 generator-core/target
 generator-source-synthea/target
 generator-target-eds/target
@@ -8,3 +9,4 @@ generator-target-eds/target
 /Dockerfile.nobuildkit
 .DS_Store
 .cache
+/repo

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2020 Hadrien Chauvin
+
 package fr.aphp.wind.eds.generator.target
 
 import fr.aphp.wind.eds.data.{GenericDataBundle, Validation}
@@ -27,6 +30,7 @@ package object eds {
       persons: DataFrame,
       observations: DataFrame,
       visitOccurrences: DataFrame,
+      visitDetail: DataFrame,
       notes: DataFrame,
       careSites: DataFrame,
       conditionOccurrences: DataFrame,
@@ -37,7 +41,8 @@ package object eds {
       cohortDefinitions: DataFrame,
       cohorts: DataFrame,
       role: DataFrame,
-      careSiteHistory: DataFrame
+      careSiteHistory: DataFrame,
+      factRelationship: DataFrame
   ) {
     def this(bundle: GenericDataBundle) {
       this(
@@ -45,6 +50,7 @@ package object eds {
         persons = bundle("person"),
         observations = bundle("observation"),
         visitOccurrences = bundle("visit_occurrence"),
+        visitDetail = bundle("visit_detail"),
         notes = bundle("note"),
         careSites = bundle("care_site"),
         conditionOccurrences = bundle("condition_occurrence"),
@@ -55,7 +61,8 @@ package object eds {
         cohortDefinitions = bundle("cohort_definition"),
         cohorts = bundle("cohort"),
         role = bundle("role"),
-        careSiteHistory = bundle("care_site_history")
+        careSiteHistory = bundle("care_site_history"),
+        factRelationship = bundle("fact_relationship")
       )
     }
 
@@ -70,6 +77,7 @@ package object eds {
           "person" -> persons,
           "observation" -> observations,
           "visit_occurrence" -> visitOccurrences,
+          "visit_detail" -> visitDetail,
           "note" -> notes,
           "care_site" -> careSites,
           "condition_occurrence" -> conditionOccurrences,
@@ -80,7 +88,8 @@ package object eds {
           "cohort_definition" -> cohortDefinitions,
           "cohort" -> cohorts,
           "role" -> role,
-          "care_site_history" -> careSiteHistory
+          "care_site_history" -> careSiteHistory,
+          "fact_relationship" -> factRelationship
         )
       )
       assert(
@@ -153,6 +162,7 @@ package object eds {
       "person",
       "observation",
       "visit_occurrence",
+      "visit_detail",
       "note",
       "care_site",
       "condition_occurrence",
@@ -163,7 +173,8 @@ package object eds {
       "cohort_definition",
       "cohort",
       "role",
-      "care_site_history"
+      "care_site_history",
+      "fact_relationship"
     )
 
     /**
@@ -235,7 +246,52 @@ package object eds {
           "male",
           "http://hl7.org/fhir/administrative-gender"
         ),
-        (1003L, "Actif", "actif", "name", "not used", "not used", "not used"),
+        (
+          4082735L,
+          "182992009",
+          "Treatment completed",
+          "SNOMED",
+          "completed",
+          "completed",
+          "http://hl7.org/fhir/procedure-status"
+        ),
+        (
+          1003L,
+          "XXX",
+          "XXX",
+          "referred-document-status",
+          "final",
+          "final",
+          "http://hl7.org/fhir/referred-document-status"
+        ),
+        (
+          1004L,
+          "XXX",
+          "XXX",
+          "referred-document-status",
+          "active",
+          "active",
+          "http://hl7.org/fhir/claim-status"
+        ),
+        (
+          // Mock diagnosis for claims/costs
+          1005L,
+          "XXX",
+          "XXX",
+          "FIXME",
+          "FIXME",
+          "FIXME",
+          "FIXME"
+        ),
+        (
+          2008111363L,
+          "Actif",
+          "actif",
+          "name",
+          "not used",
+          "not used",
+          "not used"
+        ),
         (
           2002861901L,
           "3042942",

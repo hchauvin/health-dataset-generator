@@ -12,4 +12,3 @@ storage:
 dependencies:
   scala:
     - file:///opt/generator/generator-target-eds-jar-with-dependencies.jar
-    - file:///opt/generator/third-party/synthea-with-dependencies.jar

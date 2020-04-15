@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2020 Hadrien Chauvin
+
 package fr.aphp.wind.eds
 
 import java.io.File
@@ -202,8 +205,8 @@ package object frictionless {
           s"expected a format to be set for resource ${resource.name}"
         )
 
-        var spark = SparkSession.active
-        var format = resource.format.get
+        val spark = SparkSession.active
+        val format = resource.format.get
 
         val dfReader = spark.read.format(format)
         val dfReaderWithSchema = resource.schema
@@ -224,7 +227,9 @@ package object frictionless {
             dfReader.schema(schema)
           })
           .getOrElse(dfReader)
-        (resource.name, dfReader.load(resource.path: _*))
+        (resource.name, dfReaderWithSchema.load(resource.path.map {
+          path + "/" + _
+        }: _*))
       })
       .toMap
 

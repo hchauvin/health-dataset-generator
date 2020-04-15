@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2020 Hadrien Chauvin
+
 package fr.aphp.wind.eds.generator.source
 
 import java.nio.file.Paths
@@ -96,7 +99,7 @@ package object synthea {
     * @return A new data bundle containing the population data.
     */
   def generate(population: Int): SyntheaDataBundle = {
-    val baseDirectory = Paths.get("output").toAbsolutePath
+    val baseDirectory = Paths.get(".synthea").toAbsolutePath
     Config.set("exporter.baseDirectory", baseDirectory.toString)
     Config.set("exporter.csv.export", "true")
     Config.set("generate.default_population", population.toString)

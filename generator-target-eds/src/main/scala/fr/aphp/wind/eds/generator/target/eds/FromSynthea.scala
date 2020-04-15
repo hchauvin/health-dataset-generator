@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2020 Hadrien Chauvin
+
 package fr.aphp.wind.eds.generator.target.eds
 
 import java.sql.{Date, Timestamp}
@@ -7,6 +10,7 @@ import fr.aphp.wind.eds.generator.source.synthea.SyntheaDataBundle
 import org.apache.spark.sql.expressions.UserDefinedFunction
 import org.apache.spark.sql.{Column, DataFrame, Row, SparkSession}
 import org.apache.spark.sql.types.{DoubleType, LongType}
+import fr.aphp.wind.eds.generator.uuidLong
 
 /** Converts a data bundle produced by Synthea to the format expected by the EDS.  */
 object FromSynthea {
@@ -25,6 +29,7 @@ object FromSynthea {
       observations = convert.syntheaPatients.toObservations(bundle.patients),
       visitOccurrences =
         convert.syntheaEncounters.toVisitOccurrences(bundle.encounters),
+      visitDetail = emptyDF("visit_detail"),
       notes = convert.syntheaEncounters.toNotes(bundle.encounters),
       careSites =
         convert.syntheaOrganizations.toCareSites(bundle.organizations),
@@ -38,7 +43,8 @@ object FromSynthea {
       cohortDefinitions = emptyDF("cohort_definition"),
       cohorts = emptyDF("cohort"),
       role = emptyDF("role"),
-      careSiteHistory = emptyDF("care_site_history")
+      careSiteHistory = emptyDF("care_site_history"),
+      factRelationship = emptyDF("fact_relationship")
     )
   }
 
@@ -100,7 +106,6 @@ object FromSynthea {
           condition_df: DataFrame,
           procedure_df: DataFrame
       ): DataFrame = {
-        import fr.aphp.wind.eds.generator.uuidLong
 
         condition_df
           .select("code", "description")
@@ -159,7 +164,8 @@ object FromSynthea {
             when('gender_concept_id === 8507L, 1001L)
               .when('gender_concept_id === 8532L, 1002L)
           )
-          .withColumn("row_status_source_concept_id", typedLit(1003L))
+          // Status set to "active".
+          .withColumn("row_status_source_concept_id", typedLit(2008111363L))
       }
 
       def toObservations(df: DataFrame): DataFrame = {
@@ -186,7 +192,6 @@ object FromSynthea {
       }
 
       def toLocations(df: DataFrame): DataFrame = {
-        import fr.aphp.wind.eds.generator.uuidLong
 
         df.select("address", "city", "state", "lat", "lon")
           .withColumn("location_id", uuidLong)
@@ -241,7 +246,6 @@ object FromSynthea {
       }
 
       def toNotes(df: DataFrame): DataFrame = {
-        import fr.aphp.wind.eds.generator.uuidLong
 
         df.select("id", "patient", "provider", "organization", "start")
           .withColumn("note_id", uuidLong)
@@ -272,8 +276,8 @@ object FromSynthea {
           .withColumn("language_concept_id", lit(4180186L))
           .withColumn("note_event_id", omopId('id))
           .withColumn("update_datetime", fromSyntheaDatetime('start))
-          .withColumn("note_class_source_concept_id", lit(0L))
-          .withColumn("row_status_source_concept_id", lit(0L))
+          //.withColumn("note_class_source_concept_id", lit(0L))
+          .withColumn("row_status_source_concept_id", lit(1003L))
           .drop("id", "patient", "provider", "organization", "start")
       }
     }
@@ -289,7 +293,6 @@ object FromSynthea {
 
     object syntheaConditions {
       def toConditionOccurrences(df: DataFrame): DataFrame = {
-        import fr.aphp.wind.eds.generator.uuidLong
 
         df.select("start", "stop", "encounter", "patient", "code")
           .withColumn("condition_occurrence_id", uuidLong)
@@ -312,7 +315,6 @@ object FromSynthea {
 
     object syntheaProcedures {
       def toProcedureOccurrences(df: DataFrame): DataFrame = {
-        import fr.aphp.wind.eds.generator.uuidLong
 
         df.select("code", "date", "patient", "encounter")
           .withColumn("procedure_occurrence_id", uuidLong)
@@ -322,19 +324,24 @@ object FromSynthea {
           .drop("date")
           .withColumn("person_id", omopId('patient))
           .withColumn("visit_occurrence_id", omopId('encounter))
+          .withColumn("row_status_source_concept_id", lit(4082735L))
           .drop("patient", "encounter")
       }
 
       def toCosts(df: DataFrame): DataFrame = {
-        import fr.aphp.wind.eds.generator.uuidLong
 
-        df.select("patient", "date")
+        df.select("patient", "date", "encounter")
           .withColumn("cost_id", uuidLong)
           .withColumn("incurred_datetime", fromSyntheaDate('date))
           .withColumn("person_id", omopId('patient))
-          .withColumn("drg_source_concept_id", lit(0L))
-          .withColumn("row_status_source_concept_id", lit(0L))
-          .drop("patient", "date")
+          .withColumn("drg_source_concept_id", lit(1005L))
+          .withColumn("row_status_source_concept_id", lit(1004L))
+          .withColumn(
+            "cost_event_field_concept_id",
+            lit(1147624L)
+          ) // visit_detail
+          .withColumn("cost_event_id", omopId('encounter))
+          .drop("patient", "date", "encounter")
       }
     }
 
